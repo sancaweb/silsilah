@@ -23,7 +23,7 @@
         <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
         <li class="nav-item">
-          <a href="crypto_dashboard.php" class="nav-link {{ $page == 'dasbhoard' ? 'active' : '' }}">
+          <a href="#" class="nav-link {{ $page == 'dasbhoard' ? 'active' : '' }}">
             <i class="nav-icon fas fa-tachometer-alt"></i> &nbsp;
             <p>
               Dashboard
@@ -31,9 +31,10 @@
           </a>
         </li>
 
+        <li class="nav-header">System Settings</li>
         <li class="nav-item">
           <a href="{{ route('user') }}" class="nav-link {{ $page == 'user' ? 'active' : '' }}">
-            <i class="fas fa-users-cog"></i> &nbsp;
+            <i class="nav-icon fas fa-users-cog"></i> &nbsp;
             <p>
               Users
             </p>
@@ -42,9 +43,18 @@
 
         <li class="nav-item">
           <a href="{{ route('activity') }}" class="nav-link {{ $page == 'activity' ? 'active' : '' }}">
-            <i class="fas fa-clipboard-list"></i> &nbsp;
+            <i class="nav-icon fas fa-clipboard-list"></i> &nbsp;
             <p>
               Activity Log
+            </p>
+          </a>
+        </li>
+
+        <li class="nav-item">
+          <a href="{{ route('activity') }}" class="nav-link" data-toggle="modal" data-target="#logoutModal">
+            <i class="nav-icon fas fa-sign-out-alt"></i> &nbsp;
+            <p>
+              Logout
             </p>
           </a>
         </li>

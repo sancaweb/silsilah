@@ -106,6 +106,18 @@ jQuery(document).ready(function ($) {
         closeCard();
     }
 
+    $('#btn-resetFilter').on('click', function () {
+        $('#userAct').val("");
+        $('#logNameAct').val("");
+        $('#descAct').val("");
+
+    });
+
+    $('#btn-filter').on('click', function () {
+        tableActivity.draw();
+
+    });
+
 
 
 
@@ -131,8 +143,10 @@ jQuery(document).ready(function ($) {
                 $('#txt_user').val(dataAct.user);
                 $('#txt_logName').val(dataAct.log_name);
                 $('#txt_desc').val(dataAct.description);
-                $('#txt_data').val(dataAct.properties);
+                $('#txt_data').val("" + dataAct.properties + "");
                 $('#txt_created').val(dataAct.created_at);
+
+                console.log(dataAct.properties);
 
 
 

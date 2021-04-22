@@ -9,9 +9,15 @@ class ActivityController extends Controller
 {
     public function index()
     {
+        $userAct = Activity::distinct('causer_id')->get();
+        $logNameAct = Activity::select('log_name')->distinct()->get();
+
         $dataPage = [
+
             'pageTitle' => "Activity Log",
             'page' => 'activity',
+            'userAct' => $userAct,
+            'logNameAct' => $logNameAct
 
         ];
 
@@ -23,11 +29,20 @@ class ActivityController extends Controller
 
         if ($activity) {
             $dataJson['message'] = "Data Activity ditemukan";
+            if ($activity->causer_id === null) {
+                $user = "System";
+            } else {
+                $user = $activity->causer->name;
+            }
+            $properties = [];
+            foreach ($activity->properties as $key => $prop) {
+                $properties[] = $key . ": " . $prop;
+            }
             $dataJson['data'] = [
-                'user' => $activity->user->name,
+                'user' => $user,
                 'log_name' => $activity->log_name,
                 'description' => $activity->description,
-                'properties' => $activity->properties,
+                'properties' => $properties,
                 'created_at' => $activity->created_at->translatedFormat('j F Y H:i:s'),
             ];
             return response()->json($dataJson, 200);
@@ -91,7 +106,7 @@ class ActivityController extends Controller
                 if ($act->causer_id === null) {
                     $username = "System";
                 } else {
-                    $username = $act->user->name;
+                    $username = $act->causer->name;
                 }
                 $nestedData['no'] = $no;
                 $nestedData['user'] = $username;

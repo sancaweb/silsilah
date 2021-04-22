@@ -8,7 +8,9 @@
                 <div class="col-12">
                     <div id="cardFormActivity" class="card card-outline card-primary collapsed-card">
                         <div class="card-header">
-                            <h3 class="card-title">Crypto Form</h3>
+
+                            <h3 class="card-title"><i class="fas fa-filter"></i> &nbsp;Filter Log</h3>
+
 
                             <div class="card-tools">
                                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -18,102 +20,63 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body collapse">
-                            <div class="row">
-                                <div class="col-12 col-sm-6">
-                                    <div class="form-group">
-                                        <label>Waktu Deposit:</label>
-                                        <div class="input-group date" id="reservationdatetime" data-target-input="nearest">
-                                            <input type="text" class="form-control datetimepicker-input" data-target="#reservationdatetime">
-                                            <div class="input-group-append" data-target="#reservationdatetime" data-toggle="datetimepicker">
-                                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- /.form-group -->
+                            <div class="form-group row">
+                                <div class="col-sm-6 mb-3 mb-sm-0">
+                                    <select name="userAct" id="userAct" class="form-control form-control-lg">
+                                        <option value="">-= Select User =-</option>
+                                        @foreach ($userAct as $act)
+                                        @if($act->causer_id === null)
+
+                                        <option value="system">System</option>
+                                        @else
+
+                                        <option value="{{ $act->causer_id }}">{{ $act->causer->name }}</option>
+                                        @endif
+
+                                        @endforeach
+                                    </select>
                                 </div>
-                                <div class="col-12 col-sm-6"></div>
+                                <div class="col-sm-6">
+                                    <select name="logNameAct" id="logNameAct" class="form-control form-control-lg">
+                                        <option value="">-= Select Log Name =-</option>
+                                        @foreach ($logNameAct as $log)
+                                        <option value="{{ $log->log_name }}">{{ $log->log_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="col-12">
+                                    <textarea class="form-control form-control-lg" name="descAct" id="descAct" placeholder="Description"></textarea>
+                                </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-12 col-sm-6">
 
 
-                                    <div class="form-group">
-                                        <label>Crypto</label>
-                                        <select class="form-control select2" style="width: 100%;">
-                                            <option selected="selected">DCT</option>
-                                            <option>DCT2</option>
-                                            <option>DCT3</option>
-                                            <option>DCT4</option>
-                                            <option>DCT5</option>
-                                            <option>DCT6</option>
-                                            <option>DCT7</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <div class="col-12 col-sm-6">
-                                    <div class="form-group">
-                                        <label>Topup</label>
-                                        <input class="form-control" type="text" name="" id="" placeholder="topup" value="20.000.000">
-                                    </div>
-                                </div>
-
-                            </div>
-                            <!-- /.row -->
-
-                            <div class="row">
-
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label>Referral</label>
-                                        <select class="form-control select2" style="width: 100%;">
-                                            <option selected="selected">Alabama</option>
-                                            <option>Alaska</option>
-                                            <option>California</option>
-                                            <option>Delaware</option>
-                                            <option>Tennessee</option>
-                                            <option>Texas</option>
-                                            <option>Washington</option>
-                                        </select>
-                                    </div>
-                                    <!-- /.form-group -->
-
-                                </div>
-                                <!-- /.col -->
 
 
-                                <div class="col-md-6">
 
-                                    <div class="form-group">
-                                        <label>Downline</label>
-                                        <select class="form-control select2" style="width: 100%;">
-                                            <option selected="selected">Alabama</option>
-                                            <option>Alaska</option>
-                                            <option disabled="disabled">California (disabled)</option>
-                                            <option>Delaware</option>
-                                            <option>Tennessee</option>
-                                            <option>Texas</option>
-                                            <option>Washington</option>
-                                        </select>
-                                    </div>
-                                    <!-- /.form-group -->
-                                </div>
-                                <!-- /.col -->
-                            </div>
-                            <!-- /.row -->
+
+
 
                         </div>
                         <!-- /.card-body -->
                         <div class="card-footer ">
                             <div class="row">
-                                <div class="col-md-10"></div>
-                                <div class="col-md-2">
-
-                                    <button type="button" class="btn btn-block btn-primary btn-flat float-right">
-
-                                        Save & Print
-                                    </button>
+                                <div class="col-md-6"></div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <button type="button" id="btn-resetFilter" class="btn btn-success btn-user btn-block">
+                                            <i class="fas fa-sync"></i> Reset
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <button type="button" id="btn-filter" class="btn btn-primary btn-user btn-block">
+                                            <i class="fas fa-filter"></i> Filter
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
