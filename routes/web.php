@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ActivityController;
+use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\UserController;
@@ -19,8 +19,10 @@ use App\Http\Controllers\UserController;
 |
 */
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/test', [TestingController::class, 'index'])->name('testing');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/', [DashboardController::class, 'index'])->name('root');
+});
 
 
 Auth::routes();

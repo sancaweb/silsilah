@@ -9,7 +9,21 @@ jQuery(document).ready(function ($) {
 
     $('.select2').select2({
         theme: 'bootstrap4'
-    })
+    });
+
+    //Date range picker
+    $('.rangeDate').daterangepicker({
+        autoUpdateInput: false,
+        locale: {
+            format: 'DD/MM/YYYY'
+        }
+    }, function (start, end, label) {
+        var choosen_val = start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY');
+        $('.rangeDate').val(choosen_val);
+
+    });
+
+    $('.rangeDate').val();
 
 
     var columnsTable = [
@@ -33,20 +47,22 @@ jQuery(document).ready(function ($) {
             dataType: "json",
             type: "POST",
             data: function (dataFilter) {
-                var columnsFilter = $('#columnsFilter').val();
-                var filterVal = $('#filterVal').val();
-                var jenis_data = $('#jenis_data').val();
+                var userAct = $('#userAct').val();
+                var logNameAct = $('#logNameAct').val();
+                var dateRangeFilter = $('#dateRangeFilter').val();
+                var descAct = $('#descAct').val();
 
-                dataFilter.columnsFilter = columnsFilter;
-                dataFilter.filterVal = filterVal;
-                dataFilter.jenis_data = jenis_data;
+                dataFilter.userAct = userAct;
+                dataFilter.logNameAct = logNameAct;
+                dataFilter.dateRangeFilter = dateRangeFilter;
+                dataFilter.descAct = descAct;
             }
         },
 
         columns: columnsTable,
         columnDefs: [{
             orderable: false,
-            targets: [0, 1, -1]
+            targets: [0, -1]
         }]
     });
     $("#table-activity_filter input").unbind();
@@ -110,6 +126,7 @@ jQuery(document).ready(function ($) {
         $('#userAct').val("");
         $('#logNameAct').val("");
         $('#descAct').val("");
+        $('#dateRangeFilter').val('');
 
     });
 
@@ -143,12 +160,8 @@ jQuery(document).ready(function ($) {
                 $('#txt_user').val(dataAct.user);
                 $('#txt_logName').val(dataAct.log_name);
                 $('#txt_desc').val(dataAct.description);
-                $('#txt_data').val("" + dataAct.properties + "");
+                $('#txt_data').val(JSON.stringify(dataAct.properties));
                 $('#txt_created').val(dataAct.created_at);
-
-                console.log(dataAct.properties);
-
-
 
                 Swal.close();
                 $("#detailAct").modal({
@@ -157,8 +170,20 @@ jQuery(document).ready(function ($) {
                     keyboard: false // to prevent closing with Esc button (if you want this too)
                 });
             },
-            error: function (XHR) {
-                console.log(XHR);
+            error: function (jqXHR, textStatus, errorThrown) {
+
+
+                var meta = jqXHR.responseJSON.meta;
+                var data = jqXHR.responseJSON.data;
+
+                Swal.fire({
+                    icon: "error",
+                    title: meta.message,
+                    html: '<div class="alert alert-danger text-left" role="alert">' +
+                        '<p>' + data.error + '</p>' +
+                        '</div>',
+                    allowOutsideClick: false
+                });
             }
 
         });

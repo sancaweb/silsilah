@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\ResponseFormat;
-use App\Http\Requests\UserUpdateRequest;
-use App\Models\User;
 use Exception;
+use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Crypt;
+use App\Helpers\ResponseFormat;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
+use App\Http\Requests\UserUpdateRequest;
+use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
@@ -52,28 +54,43 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'nama' => ['required', 'max:255'],
-            'username' => ['required', 'max:255', 'unique:users,username'],
-            'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required_with:password_confirmation', 'same:password_confirmation', 'min:6'],
-            'password_confirmation' => ['min:6'],
-            'role' => ['required']
-        ]);
+        $dataValidate['foto'] = ['image', 'mimes:jpeg,jpg,png,gif,svg', 'max:5000'];
+        $dataValidate['nama'] = ['required', 'max:255'];
+        $dataValidate['username'] = ['required', 'max:255', 'unique:users,username'];
+        $dataValidate['email'] = ['required', 'email', 'unique:users,email'];
+        $dataValidate['password'] = ['required_with:password_confirmation', 'same:password_confirmation', 'min:6'];
+        $dataValidate['password_confirmation'] = ['min:6'];
+        $dataValidate['role'] = ['required'];
+
+        $validator = Validator::make($request->all(), $dataValidate);
+
+        if ($validator->fails()) {
+            return ResponseFormat::error([
+                'errorValidator' => $validator->messages(),
+            ], 'Error Validator', 402);
+        }
 
         try {
             DB::beginTransaction();
 
+            if ($request->hasFile('foto')) {
+                $file = $request->file('foto');
+                $foto = $file->store("images/user");
+            } else {
+                $foto = null;
+            }
+
 
             $user = User::create([
                 'name' => $request->nama,
+                'foto' => $foto,
                 'username' => $request->username,
                 'email' => $request->email,
                 'password' => Hash::make($request->password)
             ]);
 
             $user->assignRole($request->role);
-            activity('user_management')->withProperties($request)->performedOn($user)->log('Create User');
+            activity('user_management')->withProperties($user)->performedOn($user)->log('Create User');
 
             DB::commit();
 
@@ -113,9 +130,16 @@ class UserController extends Controller
 
         if ($user) {
 
+            $dataUser = [
+                'foto' => $user->takeImage(),
+                'name' => $user->name,
+                'username' => $user->username,
+                'email' => $user->email,
+                'role' => $user->getRoleNames()
+            ];
+
             return ResponseFormat::success([
-                'user' => $user,
-                'role' => $user->getRoleNames(),
+                'user' => $dataUser,
                 'action' => route('user.update', $id)
             ], 'Data user ditemukan');
         } else {
@@ -132,15 +156,37 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(UserUpdateRequest $request, $id)
+    public function update(Request $request, $id)
     {
+        $dataValidate['foto'] = ['image', 'mimes:jpeg,jpg,png,gif,svg', 'max:5000'];
+        $dataValidate['nama'] = ['required', 'max:255'];
+        $dataValidate['username'] = ['required', 'max:255', 'unique:users,username,' . $id];
+        $dataValidate['email'] = ['required', 'email', 'unique:users,email,' . $id];
+        $dataValidate['password'] = ['same:password_confirmation'];
+        $dataValidate['password_confirmation'] = ['same:password'];
+        $dataValidate['role'] = ['required'];
 
+        $validator = Validator::make($request->all(), $dataValidate);
+
+        if ($validator->fails()) {
+            return ResponseFormat::error([
+                'errorValidator' => $validator->messages(),
+            ], 'Error Validator', 402);
+        }
 
         try {
             DB::beginTransaction();
             $user = User::find($id);
 
             if ($user) {
+
+                if ($request->hasFile('foto')) {
+                    $file = $request->file('foto');
+                    $foto = $file->store("images/user");
+                    Storage::delete($user->foto);
+                    $user->foto = $foto;
+                }
+
                 $user->name = $request->nama;
                 $user->username = $request->username;
                 $user->email = $request->email;
@@ -154,7 +200,7 @@ class UserController extends Controller
                 $user->syncRoles($request->role);
 
 
-                activity('user_management')->withProperties($request)->performedOn($user)->log('Update User');
+                activity('user_management')->withProperties($user)->performedOn($user)->log('Update User');
             } else {
                 throw new Exception("Data User tidak ditemukan");
             }
@@ -179,17 +225,19 @@ class UserController extends Controller
         $user = User::find($id);
 
         if ($user) {
+
+            $activity = activity('user_management')->withProperties($user)->performedOn($user)->log('Delete User');
+
             $user->delete();
 
-            activity('user_management')->withProperties($request)->performedOn($user)->log('Delete User');
 
             return ResponseFormat::success([
-                'message' => "Data berhasil dihapus"
+                'message' => "Data berhasil dihapus",
+                'activity' => $activity
             ], "User Deleted");
         } else {
             return ResponseFormat::error([
-                'message' => "User tidak ditemukan",
-                'error' => "Delete Failed"
+                'message' => "User tidak ditemukan"
 
             ], "Delete Failed", 404);
         }
@@ -212,10 +260,11 @@ class UserController extends Controller
     {
         $columns = array(
             0 => 'id',
-            1 => 'name',
-            2 => 'email',
-            3 => 'username',
-            4 => 'role',
+            1 => 'foto',
+            2 => 'name',
+            3 => 'email',
+            4 => 'username',
+            5 => 'role',
         );
 
         $totalData = User::count();
@@ -285,6 +334,11 @@ class UserController extends Controller
             foreach ($users as $user) {
                 $no++;
                 $nestedData['no'] = $no;
+                $nestedData['foto'] = '
+                        <a id="linkFoto" href="' . $user->takeImage() . '" data-lightbox="' . $user->name . $user->id . '" data-title="User Foto ' . $user->name . '">
+                                    <img id="imageReview" src="' . $user->takeImage() . '" alt="Image Foto" style="width: 150px;height: 150px;object-fit:cover;object-position:center;" class="img-thumbnail img-fluid">
+                                </a>
+                ';
                 $nestedData['name'] = $user->name;
                 $nestedData['email'] = $user->email;
                 $nestedData['username'] = $user->username;

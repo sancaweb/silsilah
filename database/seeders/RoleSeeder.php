@@ -25,22 +25,7 @@ class RoleSeeder extends Seeder
         ]);
 
         Role::create([
-            'name' => 'operator crypto',
-            'guard_name' => 'web'
-        ]);
-
-        Role::create([
-            'name' => 'operator wo',
-            'guard_name' => 'web'
-        ]);
-
-        Role::create([
-            'name' => 'operator car wash',
-            'guard_name' => 'web'
-        ]);
-
-        Role::create([
-            'name' => 'operator health care',
+            'name' => 'user',
             'guard_name' => 'web'
         ]);
     }

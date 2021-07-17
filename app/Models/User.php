@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Traits\HasRoles;
 
@@ -21,6 +22,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'foto',
         'username',
         'email',
         'password',
@@ -50,8 +52,25 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class, 'causer_id', 'id');
     }
 
-    public function posts()
+    // public function posts()
+    // {
+    //     return $this->hasMany(Post::class, 'user_id');
+    // }
+
+    public function takeImage()
     {
-        return $this->hasMany(Post::class, 'user_id');
+
+
+        if ($this->foto === null) {
+            return asset("images/no-image.png");
+        } else {
+            $exist = Storage::exists($this->foto);
+
+            if ($exist) {
+                return asset("storage/" . $this->foto);
+            } else {
+                return asset("images/no-imageku.png");
+            }
+        }
     }
 }

@@ -35,17 +35,21 @@
 
     <!-- Bootstrap4 Duallistbox -->
     <link rel="stylesheet" href="{{ asset('v1/plugins/bootstrap4-duallistbox/bootstrap-duallistbox.min.css') }}">
+
+    <!-- lightbox -->
+    <link rel="stylesheet" href="{{ asset('v1/plugins/lightbox/css/lightbox.min.css') }}">
+
     <!-- Theme style -->
     <link rel="stylesheet" href="{{ asset('v1/css/adminlte.min.css') }}">
 </head>
 
-<body class="hold-transition sidebar-mini sidebar-collapse">
+<body class="hold-transition dark-mode sidebar-mini sidebar-collapse">
 
     <!-- Site wrapper -->
     <div class="wrapper">
         <!-- Navbar -->
 
-        <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+        <nav class="main-header navbar navbar-expand navbar-dark">
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
@@ -66,7 +70,9 @@
         @include('layouts.sidebar')
 
         <!-- Content Wrapper. Contains page content -->
-        @yield('content')
+        <div class="content-wrapper">
+            @yield('content')
+        </div>
         <!-- /.content-wrapper -->
 
     </div>
@@ -138,10 +144,12 @@
     <!-- Tempusdominus Bootstrap 4 -->
     <script src="{{ asset('v1/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}"></script>
 
-    <script src="{{ asset('v1/plugins/chart.js/Chart.min.js') }}"></script>
+    <!-- lightbox -->
+    <script src="{{ asset('v1/plugins/lightbox/js/lightbox.min.js') }}"></script>
+
 
     <script>
-        let base_url = "{{ route('home') }}";
+        let base_url = "{{ route('root') }}";
     </script>
 
     <!-- AdminLTE App -->
@@ -155,6 +163,18 @@
 
     @if ($page == 'activity')
     <script src="{{ asset('js/pages/activity.js') }}"></script>
+    @endif
+
+    @if ($page == 'dashboard')
+
+    <script src="{{ asset('v1/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
+    <script src="{{ asset('v1/plugins/raphael/raphael.min.js') }}"></script>
+    <script src="{{ asset('v1/plugins/jquery-mapael/jquery.mapael.min.js') }}"></script>
+    <script src="{{ asset('v1/plugins/jquery-mapael/maps/usa_states.min.js') }}"></script>
+    <!-- ChartJS -->
+    <script src="{{ asset('v1/plugins/chart.js/Chart.min.js') }}"></script>
+
+    <script src="{{ asset('js/pages/dashboard.js') }}"></script>
     @endif
 
 </body>

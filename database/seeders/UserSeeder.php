@@ -31,41 +31,5 @@ class UserSeeder extends Seeder
         ]);
 
         $admin->assignRole('admin');
-
-        $operator_crypto = User::create([
-            'name' => 'Operator Crypto',
-            'username' => 'operator crypto',
-            'email' => "operator_crypto@email.com",
-            'password' => bcrypt('password')
-        ]);
-
-        $operator_crypto->assignRole('operator crypto');
-
-        $operator_wo = User::create([
-            'name' => 'Operator Wedding Organizer',
-            'username' => 'operator wo',
-            'email' => "operator_wo@email.com",
-            'password' => bcrypt('password')
-        ]);
-
-        $operator_wo->assignRole('operator wo');
-
-        $operator_car_wash = User::create([
-            'name' => 'Operator Car Wash',
-            'username' => 'operator car wash',
-            'email' => "operator_car_wash@email.com",
-            'password' => bcrypt('password')
-        ]);
-
-        $operator_car_wash->assignRole('operator car wash');
-
-        $operator_health_care = User::create([
-            'name' => 'Operator Health Care',
-            'username' => 'operator health care',
-            'email' => "operator_health_care@email.com",
-            'password' => bcrypt('password')
-        ]);
-
-        $operator_health_care->assignRole('operator health care');
     }
 }

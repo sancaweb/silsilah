@@ -20,7 +20,7 @@
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <p class="login-box-msg h4"><b>Elenio Management System</b></p>
+                <p class="login-box-msg h4"><b>Laravel8 Dummy</b></p>
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Silahkan login</p>

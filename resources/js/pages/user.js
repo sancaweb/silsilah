@@ -11,9 +11,9 @@ jQuery(document).ready(function ($) {
         theme: 'bootstrap4'
     })
 
-
     var columnsTable = [
         { data: "no" },
+        { data: "foto" },
         { data: "name" },
         { data: "email" },
         { data: "username" },
@@ -70,6 +70,27 @@ jQuery(document).ready(function ($) {
 
     /** ./end datatable */
 
+    $('#inputFoto').on("change", function () {
+        var review = 'imageReview';
+        var linkFoto = 'linkFoto';
+        readURL(this, review, linkFoto);
+    });
+
+    function readURL(input, review, linkFoto) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+
+                $('#' + review).attr('src', e.target.result);
+                $('#' + linkFoto).attr('href', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]); // convert to base64 string
+        }
+    }
+
+
     $('#openCard').on('click', function () {
         openCard();
     });
@@ -103,6 +124,8 @@ jQuery(document).ready(function ($) {
         $("#formUser").attr("action", base_url + "/user");
         $('#role').val('');
         $('[name="_method"]').remove();
+        $('#imageReview').attr('src', base_url + '/images/no-image.png');
+        $("#titleForm").html('<i class="fas fa-user-plus"></i>&nbsp; Add User');
         closeCard();
     }
 
@@ -140,30 +163,15 @@ jQuery(document).ready(function ($) {
                 });
             },
             error: function (jqXHR, textStatus, errorThrown) {
-                console.log(jqXHR);
-                console.log(errorThrown);
-                if (jqXHR.responseJSON.data) {
-
-                    var message = jqXHR.responseJSON.meta.message;
-                    var data = jqXHR.responseJSON.data;
-                    console.log(data.message)
-                    Swal.fire({
-                        icon: "error",
-                        title: message + " <br>Copy error dan hubungi Programmer!",
-                        html: '<div class="alert alert-danger text-left" role="alert">' +
-                            '<p>Error Message: <strong>' + data.message + '</strong></p>' +
-                            '<p>Error: ' + data.error.errorInfo + '</p>' +
-                            '</div>',
-                        allowOutsideClick: false
-                    });
-                } else {
-                    var errors = jqXHR.responseJSON.errors;
+                if (jqXHR.responseJSON.data.errorValidator) {
+                    var errors = jqXHR.responseJSON.data.errorValidator;
                     var message = jqXHR.responseJSON.message;
                     var li = '';
                     $.each(errors, function (key, value) {
 
                         li += "<li>" + value + "</li>"
                     });
+
                     Swal.fire({
                         icon: "error",
                         title: message,
@@ -171,7 +179,23 @@ jQuery(document).ready(function ($) {
                             '<ul>' + li + '</ul>' +
                             '</div>',
                         footer: "Pastikan data yang anda masukkan sudah benar!",
-                        allowOutsideClick: false
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
+                    });
+
+                } else {
+                    var message = jqXHR.responseJSON.meta.message;
+                    var data = jqXHR.responseJSON.data;
+
+                    Swal.fire({
+                        icon: "error",
+                        title: message + " <br>Copy error dan hubungi Programmer!",
+                        html: '<div class="alert alert-danger text-left" role="alert">' +
+                            '<p>Error Message: <strong>' + message + '</strong></p>' +
+                            '<p>Error: ' + data.error + '</p>' +
+                            '</div>',
+                        allowOutsideClick: false,
+                        showConfirmButton: true,
                     });
                 }
 
@@ -197,17 +221,16 @@ jQuery(document).ready(function ($) {
             type: "get",
             success: function (x) {
                 var dataUser = x.data.user;
-                var dataRole = x.data.role;
-                console.log(dataRole);
 
                 $("#formUser").attr("action", x.data.action);
                 $('<input name="_method" value="patch">').attr("type", "hidden").appendTo("#formUser");
+                $("#titleForm").html('<i class="fas fa-edit"></i>&nbsp; Edit User');
 
-
+                $('#imageReview').attr('src', dataUser.foto);
                 $('[name="nama"]').val(dataUser.name);
                 $('[name="username"]').val(dataUser.username);
                 $('[name="email"]').val(dataUser.email);
-                $('#role').val(dataRole).trigger('change');
+                $('#role').val(dataUser.role).trigger('change');
 
 
 
