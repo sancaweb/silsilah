@@ -158,7 +158,9 @@
     <!-- pages js -->
     @if ($page == 'user')
     <script src="{{ asset('js/pages/user.js') }}"></script>
-
+    @endif
+    @if ($page == 'userTrash')
+    <script src="{{ asset('js/pages/userTrash.js') }}"></script>
     @endif
 
     @if ($page == 'activity')

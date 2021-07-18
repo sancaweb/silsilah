@@ -27,15 +27,20 @@ Route::group(['middleware' => ['auth']], function () {
 
 Auth::routes();
 Route::group(['middleware' => ['role:super admin']], function () {
-    /** USERS */
 
+    /** USERS */
     Route::get('/user', [UserController::class, 'index'])->name('user');
     Route::post('/user', [UserController::class, 'store'])->name('user.store');
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::patch('/user/{id}/update', [UserController::class, 'update'])->name('user.update');
     Route::delete('user/{id}/delete', [UserController::class, 'delete'])->name('user.delete');
-
     Route::post('/user/datatable', [UserController::class, 'datatable'])->name('user.datatable');
+
+    //trash
+    Route::get('/user/trash', [UserController::class, 'trash'])->name('user.trash');
+    Route::post('/user/datatabletrash', [UserController::class, 'datatableTrash'])->name('user.trashDatatable');
+    Route::post('/user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
+    Route::delete('/user/{id}/destroy', [UserController::class, 'destroy'])->name('user.destroy');
 
 
     /** ACTIVITIES */

@@ -247,7 +247,7 @@ jQuery(document).ready(function ($) {
                     icon: "error",
                     title: meta.message,
                     html: '<div class="alert alert-danger text-left" role="alert">' +
-                        '<p>' + data.message + '</p>' +
+                        '<p>' + data.error + '</p>' +
                         '</div>',
                     allowOutsideClick: false
                 });

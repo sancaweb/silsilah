@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-md-4 col-sm-4">
 
-                <div id="cardFormUser" class="card card-outline card-primary collapsed-card">
+                <div id="cardFormUser" class="card card-outline card-success collapsed-card">
                     <div class="card-header">
 
                         <h3 class="card-title" id="titleForm"><i class="fas fa-user-plus"></i>&nbsp; Add User</h3>
@@ -108,13 +108,16 @@
             </div> <!-- ./end .col-md-4 -->
 
             <div class="col-md-8 col-sm-8">
-                <div class="card card-outline card-primary">
+                <div class="card card-outline card-success">
                     <div class="card-header">
                         <h3 class="card-title">Data User</h3>
                         <div class="card-tools">
                             <button id="btn-userReload" type="button" class="btn btn-sm btn-primary">
                                 <i class="fas fa-sync"></i> &nbsp; Reload
                             </button>
+                            <a href="{{ route('user.trash') }}" type="button" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i> &nbsp; Users Trash
+                            </a>
                         </div>
                     </div>
                     <!-- /.card-header -->

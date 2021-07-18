@@ -52,11 +52,6 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class, 'causer_id', 'id');
     }
 
-    // public function posts()
-    // {
-    //     return $this->hasMany(Post::class, 'user_id');
-    // }
-
     public function takeImage()
     {
 

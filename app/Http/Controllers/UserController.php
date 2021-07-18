@@ -101,8 +101,7 @@ class UserController extends Controller
         } catch (Exception $error) {
             DB::rollBack();
             return ResponseFormat::error([
-                'message' => "Something went wrong",
-                'error' => $error
+                'error' => $error->getMessage()
             ], 'Error Penambahan user', 400);
         }
     }
@@ -144,7 +143,7 @@ class UserController extends Controller
             ], 'Data user ditemukan');
         } else {
             return ResponseFormat::error([
-                'message' => "Data user tidak ditemukan"
+                'error' => "Data user tidak ditemukan"
             ], "Not found", 404);
         }
     }
@@ -214,8 +213,7 @@ class UserController extends Controller
             DB::rollBack();
 
             return ResponseFormat::error([
-                'message' => "Something went wrong",
-                'error' => $error
+                'error' => $error->getMessage()
             ], "Update User Error", 400);
         }
     }
@@ -226,20 +224,48 @@ class UserController extends Controller
 
         if ($user) {
 
-            $activity = activity('user_management')->withProperties($user)->performedOn($user)->log('Delete User');
+            activity('user_management')->withProperties($user)->performedOn($user)->log('Delete User');
 
             $user->delete();
 
 
             return ResponseFormat::success([
                 'message' => "Data berhasil dihapus",
-                'activity' => $activity
             ], "User Deleted");
         } else {
             return ResponseFormat::error([
-                'message' => "User tidak ditemukan"
+                'error' => "User tidak ditemukan"
 
             ], "Delete Failed", 404);
+        }
+    }
+
+    public function trash()
+    {
+        $dataPage = [
+            'pageTitle' => "User Trash",
+            'page' => 'userTrash'
+        ];
+
+        return view('users.trash', $dataPage);
+    }
+
+    public function restore(Request $request, $id)
+    {
+        $user = User::onlyTrashed()->find($id);
+
+        if ($user) {
+            $user->restore();
+            activity('user_management')->withProperties($user)->performedOn($user)->log('Restore User');
+
+            return ResponseFormat::success([
+                'message' => 'Data User Restored'
+            ], "Data User Restored");
+        } else {
+
+            return ResponseFormat::error([
+                'error' => "Data User not found"
+            ], "Data User not found", 404);
         }
     }
 
@@ -249,9 +275,34 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, $id)
     {
-        //
+        $user = User::onlyTrashed()->find($id);
+
+        if ($user) {
+            DB::beginTransaction();
+            try {
+                $foto = $user->foto;
+                $user->roles()->detach();
+                $user->forceDelete();
+
+                Storage::delete($foto);
+                activity('user_management')->withProperties($user)->performedOn($user)->log('Destroy User');
+                DB::commit();
+                return ResponseFormat::success([
+                    'message' => "Data User Destroyed"
+                ], "Data User Destroyed");
+            } catch (Exception $error) {
+                DB::rollBack();
+                return ResponseFormat::error([
+                    'error' => $error->getMessage()
+                ], "Something went wrong", 400);
+            }
+        } else {
+            return ResponseFormat::error([
+                'error' => "Data User not found"
+            ], "Data User not found", 404);
+        }
     }
 
 
@@ -350,6 +401,108 @@ class UserController extends Controller
                           <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-circle btn-delete">
                               <i class="fas fa-trash"></i>
                           </button>
+                          ';
+
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data,
+            "order"           => $order,
+            "dir" => $dir
+        );
+
+        return response()->json($json_data, 200);
+    }
+
+    public function datatableTrash(Request $request)
+    {
+        $columns = array(
+            0 => 'id',
+            1 => 'foto',
+            2 => 'name',
+            3 => 'email',
+            4 => 'username',
+            5 => 'role',
+        );
+
+        $totalData = User::onlyTrashed()->count();
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+        //query
+        $search = $request->input('search.value');
+        $filter = false;
+
+        $getUsers = User::onlyTrashed()->join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->select('users.*', 'roles.name as rolename');
+
+
+        //filter-filter
+
+        if (!empty($search)) {
+            $getUsers->where(function ($query) use ($search) {
+                $query->where('roles.name', 'LIKE', "%{$search}%")
+                    ->orWhere('users.name', 'LIKE', "%{$search}%")
+                    ->orWhere('username', 'LIKE', "%{$search}%")
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
+
+            $filter = true;
+        }
+
+
+
+        //getData
+        if ($request->input('order.0.column') == 5) {
+            $users = $getUsers->offset($start)
+                ->limit($limit)
+                ->orderBy('roles.name', $dir)
+                ->get();
+        } else {
+            $users = $getUsers->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+        }
+
+        if ($filter == true) {
+            $totalFiltered = $getUsers->count();
+        }
+
+
+        $data = array();
+
+        if (!empty($users)) {
+            $no = $start;
+            foreach ($users as $user) {
+                $no++;
+                $nestedData['no'] = $no;
+                $nestedData['foto'] = '
+                        <a id="linkFoto" href="' . $user->takeImage() . '" data-lightbox="' . $user->name . $user->id . '" data-title="User Foto ' . $user->name . '">
+                                    <img id="imageReview" src="' . $user->takeImage() . '" alt="Image Foto" style="width: 150px;height: 150px;object-fit:cover;object-position:center;" class="img-thumbnail img-fluid">
+                                </a>
+                ';
+                $nestedData['name'] = $user->name;
+                $nestedData['email'] = $user->email;
+                $nestedData['username'] = $user->username;
+                $nestedData['role'] = $user->getRoleNames();
+
+                $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-warning btn-circle btn-restore" title="Restore User">
+                <i class="fas fa-trash-restore"></i>
+                            </button>
+                            <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-circle btn-destroy" title="Permanent Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
                           ';
 
                 $data[] = $nestedData;
