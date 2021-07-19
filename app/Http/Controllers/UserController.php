@@ -222,14 +222,34 @@ class UserController extends Controller
 
         if ($user) {
 
-            activity('user_management')->withProperties($user)->performedOn($user)->log('Delete User');
+            $loggedIn = auth()->user()->id;
+            $userId = $user->id;
 
-            $user->delete();
+            if ($loggedIn == $userId) {
+                return ResponseFormat::error([
+                    'error' => "User yang sedang login tidak bisa dihapus"
+                ], "Delete Failed", 403);
+            }
 
+            DB::beginTransaction();
 
-            return ResponseFormat::success([
-                'message' => "Data berhasil dihapus",
-            ], "User Deleted");
+            try {
+
+                activity('user_management')->withProperties($user)->performedOn($user)->log('Delete User');
+
+                $user->delete();
+
+                DB::commit();
+                return ResponseFormat::success([
+                    'message' => "Data berhasil dihapus",
+                ], "User Deleted");
+            } catch (Exception $error) {
+                DB::rollBack();
+
+                return ResponseFormat::error([
+                    'error' => $error->getMessage()
+                ], "Something went wrong", 400);
+            }
         } else {
             return ResponseFormat::error([
                 'error' => "User tidak ditemukan"

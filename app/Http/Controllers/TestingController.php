@@ -10,14 +10,7 @@ class TestingController extends Controller
 {
     public function index()
     {
-        $users = User::onlyTrashed()->find(20);
-
-        if ($users) {
-            dd("Data ditemukan");
-        } else {
-            dd("Data tidak ditemukan");
-        }
-
+        auth()->user()->id;
         // dd($users);
     }
 }

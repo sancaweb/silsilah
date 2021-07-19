@@ -143,6 +143,7 @@ jQuery(document).ready(function ($) {
             processData: false,
             dataType: "JSON",
             success: function (data) {
+
                 Swal.fire({
                     icon: "success",
                     title: data.meta.message,
@@ -150,6 +151,11 @@ jQuery(document).ready(function ($) {
                     timer: 2000,
                     allowOutsideClick: false
                 }).then(function () {
+                    var dataUser = data.data.user;
+
+                    $('#userImageSide').attr('src', base_url + '/storage/' + dataUser.foto);
+                    $('#userNameSide').html(dataUser.name);
+
                     refreshTable();
 
                     closeForm();
