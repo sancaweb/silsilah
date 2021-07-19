@@ -58,7 +58,6 @@ jQuery(document).ready(function ($) {
 
     function refreshTable() {
         tableUser.search("").draw();
-        tableUser.ajax.reload();
     }
 
     var btnReloadUser = document.getElementById('btn-userReload');
@@ -77,47 +76,19 @@ jQuery(document).ready(function ($) {
     });
 
     function readURL(input, review, linkFoto) {
+
         if (input.files && input.files[0]) {
             var reader = new FileReader();
 
             reader.onload = function (e) {
-
                 $('#' + review).attr('src', e.target.result);
                 $('#' + linkFoto).attr('href', e.target.result);
+
             }
 
             reader.readAsDataURL(input.files[0]); // convert to base64 string
         }
     }
-
-
-    $('#openCard').on('click', function () {
-        openCard();
-    });
-
-    $('#closeCard').on('click', function () {
-        closeCard();
-    });
-    $('#formReset').on('click', function () {
-        formReset();
-    });
-
-    function closeCard() {
-        var elementLink = document.getElementById("cardFormUser");
-        elementLink.classList.add("collapsed-card");
-
-        $('.collapse').collapse('hide');
-
-    }
-
-    function openCard() {
-        var elementLink = document.getElementById("cardFormUser");
-        elementLink.classList.remove("collapsed-card");
-
-        $('.collapse').collapse('show');
-
-    }
-
 
     function formReset() {
         $('#formUser')[0].reset();
@@ -125,8 +96,30 @@ jQuery(document).ready(function ($) {
         $('#role').val('');
         $('[name="_method"]').remove();
         $('#imageReview').attr('src', base_url + '/images/no-image.png');
-        $("#titleForm").html('<i class="fas fa-user-plus"></i>&nbsp; Add User');
-        closeCard();
+        $('#linkFoto').attr('href', base_url + '/images/no-image.png');
+
+        $("#modalFormInputLabel").html('<i class="fas fa-user-plus"></i>&nbsp; Add User');
+    }
+
+    $('.openForm').on('click', function () {
+        openForm();
+    });
+
+    $('.closeForm').on('click', function () {
+        closeForm();
+    });
+
+    function openForm() {
+        $('#modalFormInput').modal({
+            show: true,
+            backdrop: 'static',
+            keyboard: false // to prevent closing with Esc button (if you want this too)
+        });
+    }
+
+    function closeForm() {
+        $('#modalFormInput').modal('hide');
+        formReset();
     }
 
 
@@ -158,7 +151,8 @@ jQuery(document).ready(function ($) {
                     allowOutsideClick: false
                 }).then(function () {
                     refreshTable();
-                    formReset();
+
+                    closeForm();
 
                 });
             },
@@ -224,17 +218,18 @@ jQuery(document).ready(function ($) {
 
                 $("#formUser").attr("action", x.data.action);
                 $('<input name="_method" value="patch">').attr("type", "hidden").appendTo("#formUser");
-                $("#titleForm").html('<i class="fas fa-edit"></i>&nbsp; Edit User');
+                $("#modalFormInputLabel").html('<i class="fas fa-edit"></i>&nbsp; Edit User');
 
                 $('#imageReview').attr('src', dataUser.foto);
+                $('#linkFoto').attr('href', dataUser.foto);
+
+
                 $('[name="nama"]').val(dataUser.name);
                 $('[name="username"]').val(dataUser.username);
                 $('[name="email"]').val(dataUser.email);
                 $('#role').val(dataUser.role).trigger('change');
 
-
-
-                openCard();
+                openForm();
                 Swal.close();
 
 
@@ -258,7 +253,7 @@ jQuery(document).ready(function ($) {
     /** delete user */
 
     $('#table-user').on('click', '.btn-delete', function () {
-        formReset();
+        closeForm();
         Swal.fire({
             title: 'Anda yakin?',
             text: "Anda yakin ingin menghapus data?",

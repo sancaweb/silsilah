@@ -9,9 +9,7 @@ use App\Helpers\ResponseFormat;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Storage;
-use App\Http\Requests\UserUpdateRequest;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -82,7 +80,7 @@ class UserController extends Controller
 
 
             $user = User::create([
-                'name' => $request->nama,
+                'name' => ucwords($request->nama),
                 'foto' => $foto,
                 'username' => $request->username,
                 'email' => $request->email,
@@ -186,7 +184,7 @@ class UserController extends Controller
                     $user->foto = $foto;
                 }
 
-                $user->name = $request->nama;
+                $user->name = ucwords($request->nama);
                 $user->username = $request->username;
                 $user->email = $request->email;
 
@@ -326,57 +324,45 @@ class UserController extends Controller
         $order = $columns[$request->input('order.0.column')];
         $dir = $request->input('order.0.dir');
 
-        if (empty($request->input('search.value'))) {
-            if ($request->input('order.0.column') == 4) {
-                $users = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->select('users.*', 'roles.name as rolename')
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy('roles.name', $dir)
-                    ->get();
-            } else {
-                $users = User::offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
-            }
-        } else {
-            $search = $request->input('search.value');
-            if ($request->input('order.0.column') == 4) {
-                $users = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-                    ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-                    ->select('users.*', 'roles.name as rolename')
-                    ->where('roles.name', 'LIKE', "%{$search}%")
+
+        // query
+        $search = $request->input('search.value');
+        $filter = false;
+
+        $getUsers = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+            ->select('users.*', 'roles.name as rolename');
+
+
+        //filter - filter
+        if (!empty($search)) {
+            $getUsers->where(function ($query) use ($search) {
+                $query->where('roles.name', 'LIKE', "%{$search}%")
                     ->orWhere('users.name', 'LIKE', "%{$search}%")
                     ->orWhere('username', 'LIKE', "%{$search}%")
-                    ->orWhere('email', 'LIKE', "%{$search}%")
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy('roles.name', $dir)
-                    ->get();
-            } else {
-                $users =  User::whereHas('roles', function ($query) use ($search) {
-                    $query->where('roles.name', 'LIKE', "%{$search}%");
-                })
-                    ->orWhere('name', 'LIKE', "%{$search}%")
-                    ->orWhere('username', 'LIKE', "%{$search}%")
-                    ->orWhere('email', 'LIKE', "%{$search}%")
-                    ->offset($start)
-                    ->limit($limit)
-                    ->orderBy($order, $dir)
-                    ->get();
-            }
+                    ->orWhere('email', 'LIKE', "%{$search}%");
+            });
 
-
-            $totalFiltered = User::whereHas('roles', function ($query) use ($search) {
-                $query->where('roles.name', 'LIKE', "%{$search}%");
-            })
-                ->orWhere('name', 'LIKE', "%{$search}%")
-                ->orWhere('username', 'LIKE', "%{$search}%")
-                ->orWhere('email', 'LIKE', "%{$search}%")
-                ->count();
+            $filter = true;
         }
+
+        //getData
+        if ($request->input('order.0.column') == 5) {
+            $users = $getUsers->offset($start)
+                ->limit($limit)
+                ->orderBy('roles.name', $dir)
+                ->get();
+        } else {
+            $users = $getUsers->offset($start)
+                ->limit($limit)
+                ->orderBy($order, $dir)
+                ->get();
+        }
+
+        if ($filter == true) {
+            $totalFiltered = $getUsers->count();
+        }
+
 
         $data = array();
 
@@ -386,8 +372,8 @@ class UserController extends Controller
                 $no++;
                 $nestedData['no'] = $no;
                 $nestedData['foto'] = '
-                        <a id="linkFoto" href="' . $user->takeImage() . '" data-lightbox="' . $user->name . $user->id . '" data-title="User Foto ' . $user->name . '">
-                                    <img id="imageReview" src="' . $user->takeImage() . '" alt="Image Foto" style="width: 150px;height: 150px;object-fit:cover;object-position:center;" class="img-thumbnail img-fluid">
+                        <a href="' . $user->takeImage() . '" data-lightbox="' . $user->name . $user->id . '" data-title="User Foto ' . $user->name . '">
+                                    <img src="' . $user->takeImage() . '" alt="Image Foto" style="width: 150px;height: 150px;object-fit:cover;object-position:center;" class="img-thumbnail img-fluid">
                                 </a>
                 ';
                 $nestedData['name'] = $user->name;
@@ -488,8 +474,8 @@ class UserController extends Controller
                 $no++;
                 $nestedData['no'] = $no;
                 $nestedData['foto'] = '
-                        <a id="linkFoto" href="' . $user->takeImage() . '" data-lightbox="' . $user->name . $user->id . '" data-title="User Foto ' . $user->name . '">
-                                    <img id="imageReview" src="' . $user->takeImage() . '" alt="Image Foto" style="width: 150px;height: 150px;object-fit:cover;object-position:center;" class="img-thumbnail img-fluid">
+                        <a href="' . $user->takeImage() . '" data-lightbox="' . $user->name . $user->id . '" data-title="User Foto ' . $user->name . '">
+                                    <img src="' . $user->takeImage() . '" alt="Image Foto" style="width: 150px;height: 150px;object-fit:cover;object-position:center;" class="img-thumbnail img-fluid">
                                 </a>
                 ';
                 $nestedData['name'] = $user->name;
