@@ -8,9 +8,7 @@ use Illuminate\Http\Request;
 use App\Helpers\ResponseFormat;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\{Hash, Storage, Validator};
 
 class UserController extends Controller
 {

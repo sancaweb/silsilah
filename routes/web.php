@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\RolePermissionController;
 use App\Http\Controllers\TestingController;
 use App\Http\Controllers\UserController;
 
@@ -31,11 +32,11 @@ Route::group(['middleware' => ['role:super admin']], function () {
     /** USERS */
     Route::get('/user', [UserController::class, 'index'])->name('user');
     Route::post('/user', [UserController::class, 'store'])->name('user.store');
+
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::patch('/user/{id}/update', [UserController::class, 'update'])->name('user.update');
     Route::delete('user/{id}/delete', [UserController::class, 'delete'])->name('user.delete');
     Route::post('/user/datatable', [UserController::class, 'datatable'])->name('user.datatable');
-
     Route::get('/user/{id}/profile', [UserController::class, 'show'])->name('user.profile');
 
     //trash
@@ -53,9 +54,32 @@ Route::group(['middleware' => ['role:super admin']], function () {
 
 
 
-// Route::group(['middleware'=>['auth']], function(){
-//     Route::resource('roles',RoleController::class);
-//     Route::resource('users',UserController::class);
+Route::group(['middleware' => ['role:super admin']], function () {
+    Route::get('/rolepermission', [RolePermissionController::class, 'index'])->name('rolepermission');
 
-//     Route::resource('roles',ArticleController::class);
+    /**
+     * ROLE PROCESS
+     */
+    Route::post('/role', [RolePermissionController::class, 'storeRole'])->name('role.store');
+    Route::get('/role/{id}/edit', [RolePermissionController::class, 'editRole'])->name('role.edit');
+    Route::patch('/role/{id}/update', [RolePermissionController::class, 'updateRole'])->name('role.update');
+    Route::delete('/role/{id}/delete', [RolePermissionController::class, 'deleteRole'])->name('role.delete');
+    Route::post('/role/datatable', [RolePermissionController::class, 'datatableRoles'])->name('role.datatable');
+
+
+    /** PERMISSIONS PROCESS */
+    Route::post('/permission', [RolePermissionController::class, 'storePermission'])->name('permission.store');
+    Route::get('/permission/{id}/edit', [RolePermissionController::class, 'editPermission'])->name('permission.edit');
+    Route::patch('/permission/{id}/update', [RolePermissionController::class, 'updatePermission'])->name('permission.update');
+    Route::delete('/permission/{id}/delete', [RolePermissionController::class, 'deletePermission'])->name('permission.delete');
+    Route::post('/permission/datatable', [RolePermissionController::class, 'datatablePermissions'])->name('permission.datatable');
+
+
+    /** ASSIGN PROCESS */
+
+
+    Route::get('/assignpermission', [RolePermissionController::class, 'assign'])->name('rolepermission.assign');
+});
+// Route::group(['middleware' => ['auth']], function () {
+
 // });

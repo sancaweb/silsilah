@@ -32,6 +32,34 @@
                 </li>
 
                 <li class="nav-header">System Settings</li>
+
+                <li class="nav-item {{ $page=='rolePermission' || $page=='assignPermission' ? 'menu-is-opening menu-open' : '' }}">
+                    <a href="#" class="nav-link">
+                        <i class="nav-icon fas fa-user-shield"></i>
+                        <p>
+                            Roles & Permissions
+                            <i class="fas fa-angle-left right"></i>
+                        </p>
+                    </a>
+                    <ul class="nav nav-treeview" {{ $page=='rolePermission' || $page=='assignPermission' ? 'style="display:block;"' : 'style="display:none;"' }}>
+                        <li class="nav-item">
+                            <a href="{{ route('rolepermission') }}" class="nav-link {{ $page=='rolePermission' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Data</p>
+                            </a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a href="{{ route('rolepermission.assign') }}" class="nav-link {{ $page=='assignPermission' ? 'active' : '' }}">
+                                <i class="far fa-circle nav-icon"></i>
+                                <p>Assign Permissions</p>
+                            </a>
+                        </li>
+
+
+                    </ul>
+                </li>
+
                 <li class="nav-item">
                     <a href="{{ route('user') }}" class="nav-link {{ $page == 'user' ? 'active' : '' }}">
                         <i class="nav-icon fas fa-users-cog"></i> &nbsp;

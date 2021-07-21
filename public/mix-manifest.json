@@ -4,5 +4,6 @@
     "/js/pages/userTrash.js": "/js/pages/userTrash.js",
     "/js/pages/activity.js": "/js/pages/activity.js",
     "/js/pages/dashboard.js": "/js/pages/dashboard.js",
+    "/js/pages/rolePermission.js": "/js/pages/rolePermission.js",
     "/css/app.css": "/css/app.css"
 }

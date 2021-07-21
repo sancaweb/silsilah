@@ -167,6 +167,10 @@
     <script src="{{ asset('js/pages/activity.js') }}"></script>
     @endif
 
+    @if ($page == 'rolePermission')
+    <script src="{{ asset('js/pages/rolePermission.js') }}"></script>
+    @endif
+
     @if ($page == 'dashboard')
 
     <script src="{{ asset('v1/plugins/jquery-mousewheel/jquery.mousewheel.js') }}"></script>
