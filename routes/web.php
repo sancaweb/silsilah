@@ -36,6 +36,8 @@ Route::group(['middleware' => ['role:super admin']], function () {
     Route::delete('user/{id}/delete', [UserController::class, 'delete'])->name('user.delete');
     Route::post('/user/datatable', [UserController::class, 'datatable'])->name('user.datatable');
 
+    Route::get('/user/{id}/profile', [UserController::class, 'show'])->name('user.profile');
+
     //trash
     Route::get('/user/trash', [UserController::class, 'trash'])->name('user.trash');
     Route::post('/user/datatabletrash', [UserController::class, 'datatableTrash'])->name('user.trashDatatable');

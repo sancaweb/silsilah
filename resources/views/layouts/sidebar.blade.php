@@ -13,7 +13,7 @@
                 <img id="userImageSide" src="{{ auth()->user()->takeImage() }}" class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-                <a id="userNameSide" href="#" class="d-block">{{ auth()->user()->name }}</a>
+                <a id="userNameSide" href="{{ route('user.profile', auth()->user()->id) }}" class="d-block">{{ auth()->user()->name }}</a>
             </div>
         </div>
 

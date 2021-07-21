@@ -9,11 +9,11 @@
 
         <div class="row">
             <div class="col-12">
-                <div class="card card-outline card-primary">
+                <div class="card card-outline card-success">
                     <div class="card-header">
                         <h3 class="card-title">{{ $pageTitle}}</h3>
                         <div class="card-tools">
-                            <button id="btn-activityReload" type="button" class="btn btn-sm btn-primary">
+                            <button id="btn-activityReload" type="button" class="btn btn-sm btn-success">
                                 <i class="fas fa-sync"></i> &nbsp; Reload
                             </button>
                         </div>

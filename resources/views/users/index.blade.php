@@ -3,7 +3,9 @@
 
 <section class="content mt-4">
     <div class="container-fluid">
-
+        <div class="alert alert-success">
+            TESTING
+        </div>
 
         <div class="row">
 
@@ -34,6 +36,7 @@
                                     <th>Email</th>
                                     <th>Username</th>
                                     <th>Role</th>
+                                    <th>Created</th>
                                     <th>Action</th>
                                 </tr>
                             </thead>

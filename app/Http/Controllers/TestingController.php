@@ -10,7 +10,8 @@ class TestingController extends Controller
 {
     public function index()
     {
-        auth()->user()->id;
-        // dd($users);
+        $user = auth()->user();
+        $roles = $user->roles->pluck('name');
+        dd($roles[0]);
     }
 }

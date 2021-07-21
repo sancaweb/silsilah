@@ -1,7 +1,7 @@
 <!-- Form -->
 <div class="row">
     <div class="col-12">
-        <div id="cardFormActivity" class="card card-outline card-primary collapsed-card">
+        <div id="cardFormActivity" class="card card-outline card-success collapsed-card">
             <div class="card-header">
 
                 <h3 class="card-title"><i class="fas fa-filter"></i> &nbsp;Filter Log</h3>

@@ -112,7 +112,18 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
+        $user = User::find($id);
+        if ($user) {
+            $dataPage = [
+                'pageTitle' => 'User Profile',
+                'page' => 'userProfile',
+                'roles' => Role::all()->pluck('name'),
+                'user' => $user
+            ];
+
+            return view('users.profile', $dataPage);
+        } else {
+        }
     }
 
     /**
@@ -334,6 +345,7 @@ class UserController extends Controller
             3 => 'email',
             4 => 'username',
             5 => 'role',
+            6 => 'created_at'
         );
 
         $totalData = User::count();
@@ -400,11 +412,12 @@ class UserController extends Controller
                 $nestedData['email'] = $user->email;
                 $nestedData['username'] = $user->username;
                 $nestedData['role'] = $user->getRoleNames();
+                $nestedData['created_at'] = $user->created_at->diffForHumans();
 
-                $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-primary btn-circle btn-edit">
+                $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-primary btn-flat btn-edit">
                               <i class="fas fa-edit"></i>
                           </button>
-                          <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-circle btn-delete">
+                          <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-flat btn-delete">
                               <i class="fas fa-trash"></i>
                           </button>
                           ';
@@ -503,10 +516,10 @@ class UserController extends Controller
                 $nestedData['username'] = $user->username;
                 $nestedData['role'] = $user->getRoleNames();
 
-                $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-warning btn-circle btn-restore" title="Restore User">
+                $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-warning btn-flat btn-restore" title="Restore User">
                 <i class="fas fa-trash-restore"></i>
                             </button>
-                            <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-circle btn-destroy" title="Permanent Delete">
+                            <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-flat btn-destroy" title="Permanent Delete">
                                 <i class="fas fa-trash"></i>
                             </button>
                           ';

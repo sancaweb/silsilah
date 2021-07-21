@@ -18,6 +18,7 @@ jQuery(document).ready(function ($) {
         { data: "email" },
         { data: "username" },
         { data: "role" },
+        { data: "created_at" },
         { data: "action" },
     ];
 
