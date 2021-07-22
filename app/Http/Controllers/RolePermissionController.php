@@ -420,11 +420,174 @@ class RolePermissionController extends Controller
 
     public function assign()
     {
+        $countPermissions = Permission::count();
+
+        $pembagian = $countPermissions / 2;
+
+        $startSatu = 0;
+        $startDua = $pembagian;
+
+        $permissionsSatu = Permission::offset($startSatu)->limit($pembagian)->get();
+        $permissionsDua = Permission::offset($startDua)->limit($pembagian)->get();
+
+
         $dataPage = [
             'pageTitle' => "Assign Roles & Permissions",
-            'page' => "assignPermission"
+            'page' => "assignPermission",
+            'permissionsSatu' => $permissionsSatu,
+            'permissionsDua' => $permissionsDua
         ];
 
         return view('rolesPermissions.assignPermission', $dataPage);
+    }
+
+    public function viewPermissions($id = null)
+    {
+
+        $role = Role::find($id);
+
+        if ($role) {
+
+            $permissions = $role->permissions->pluck('name');
+
+            if (count($permissions) <= 0) {
+                return ResponseFormat::success([
+                    'dataPermissions' => '',
+                    'dataRole' => $role,
+                    'message' => "Please give permission(s) to Role",
+                ], "Permissions Not Found");
+            } else {
+                return ResponseFormat::success([
+                    'dataRole' => $role,
+                    'dataPermissions' => $permissions
+                ], "Permissions Found");
+            }
+        } else {
+            return ResponseFormat::error([
+                'error' => "Role Not Found"
+            ], "Role Not Found", 404);
+        }
+    }
+
+    public function storeAssign(Request $request)
+    {
+        $dataValidate = [
+            'idRole' => ['required', 'numeric'],
+            'permissions' => ['required', 'array']
+        ];
+
+        $validator = Validator::make($request->all(), $dataValidate);
+
+        if ($validator->fails()) {
+            return ResponseFormat::error([
+                'errorValidator' => $validator->messages()
+            ], 'Error Validator', 402);
+        }
+
+        $role = Role::find($request->idRole);
+
+        if ($role) {
+            $role->syncPermissions($request->permissions);
+
+            return ResponseFormat::success([
+                'messages' => "Role has been assigned to permissions"
+            ], "Role has been assigned to permissions");
+        } else {
+            return ResponseFormat::error(
+                ['error' => "Role Not Found"],
+                "Error Not Found",
+                404
+            );
+        }
+
+
+        // dd($request);
+    }
+
+    public function datatableAssign(Request $request)
+    {
+        $columns = array(
+            0 => 'id',
+            1 => 'roles.name',
+            2 => 'permissions.name',
+            3 => 'created_at'
+        );
+
+        $totalData = Role::count();
+        $totalFiltered = $totalData;
+
+        $limit = $request->input('length');
+        $start = $request->input('start');
+        $order = $columns[$request->input('order.0.column')];
+        $dir = $request->input('order.0.dir');
+
+
+        // query
+        $search = $request->input('search.value');
+        $filter = false;
+
+        $getRoles = Role::with('permissions');
+
+        //filter - filter
+        if (!empty($search)) {
+            $getRoles->where(function ($query) use ($search) {
+                $query->where('roles.name', 'LIKE', "%{$search}%")
+                    ->orWhere('permissions.name', 'LIKE', "%{$search}%");
+            });
+
+            $filter = true;
+        }
+
+        //getData
+        $roles = $getRoles->offset($start)
+            ->limit($limit)
+            ->orderBy($order, $dir)
+            ->get();
+
+        if ($filter == true) {
+            $totalFiltered = $getRoles->count();
+        }
+
+
+        $data = array();
+
+        if (!empty($roles)) {
+            $no = $start;
+            foreach ($roles as $role) {
+                $no++;
+                $dataPermissions = [];
+                foreach ($role->permissions as $permit) {
+                    $dataPermissions[] = ucwords($permit->name);
+                }
+
+                $nestedData['no'] = $no;
+                $nestedData['role'] = ucwords($role->name);
+                $nestedData['permission'] = '<button data-id="' . $role->id . '" class="btn btn-primary btn-flat btn-view">
+                <i class="nav-icon fas fa-user-shield"></i>&nbsp; View & Assign Permissions
+            </button>';
+                $nestedData['created_at'] = $role->created_at->diffForHumans();
+
+                // $nestedData['action'] = '<button data-id="' . $role->id . '" class="btn btn-primary btn-flat btn-edit">
+                //               <i class="fas fa-edit"></i>
+                //           </button>
+                //           <button type="button" data-id="' . $role->id . '" class="btn btn-danger btn-flat btn-delete">
+                //               <i class="fas fa-trash"></i>
+                //           </button>
+                //           ';
+
+                $data[] = $nestedData;
+            }
+        }
+
+        $json_data = array(
+            "draw"            => intval($request->input('draw')),
+            "recordsTotal"    => intval($totalData),
+            "recordsFiltered" => intval($totalFiltered),
+            "data"            => $data,
+            "order"           => $order,
+            "dir" => $dir
+        );
+
+        return response()->json($json_data, 200);
     }
 }

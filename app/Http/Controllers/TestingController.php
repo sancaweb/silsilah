@@ -6,25 +6,23 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Activitylog\Models\Activity;
+use Spatie\Permission\Models\Permission;
 
 class TestingController extends Controller
 {
     public function index()
     {
-        $role = Role::find(4);
-        // // $role->givePermissionTo(['create user', 'read user', 'update user']);
-        // // $role->givePermissionTo(['create user', 'read user', 'update user', 'delete user']);
-        // $role->givePermissionTo(['create user', 'read user']);
+        $countPermissions = Permission::count();
 
-        // $user = User::find(1);
+        $pembagian = $countPermissions / 2;
 
-        // // $permissions = $user->getAllPermissions()->pluck('name');
-        // $permissions = $user->getPermissionsViaRoles()->pluck('name');
+        $startSatu = 0;
+        // $limit = $pembagian;
+        $startDua = $pembagian;
 
-        // $roles = Role::with('permission')->get();
+        $pembagianSatu = Permission::offset($startSatu)->limit($pembagian)->get();
+        $pembagianDua = Permission::offset($startDua)->limit($pembagian)->get();
 
-        $permission = $role->hasPermissionTo('read user');
-
-        dd($permission);
+        dd($pembagianDua);
     }
 }

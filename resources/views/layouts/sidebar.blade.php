@@ -50,7 +50,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a href="{{ route('rolepermission.assign') }}" class="nav-link {{ $page=='assignPermission' ? 'active' : '' }}">
+                            <a href="{{ route('assignPermission.assign') }}" class="nav-link {{ $page=='assignPermission' ? 'active' : '' }}">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Assign Permissions</p>
                             </a>

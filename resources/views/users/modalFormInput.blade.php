@@ -1,6 +1,6 @@
 <div class="modal fade" id="modalFormInput" tabindex="-1" role="dialog" aria-labelledby="modalFormInputLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">
-        <form action="{{ route('user.store') }}" id="formUser" enctype="multipart/form-data">
+        <form action="{{ route('user.store') }}" method="POST" id="formUser" enctype="multipart/form-data">
             @csrf
             <div class="modal-content">
                 <div class="modal-header">
@@ -76,8 +76,8 @@
 
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-secondary btn-flat btn-danger closeForm" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary btn-flat">Save changes</button>
+                    <button type="button" class="btn btn-secondary btn-flat btn-danger closeForm" data-dismiss="modal"><i class="far fa-window-close"></i>&nbsp;Close</button>
+                    <button type="submit" class="btn btn-primary btn-flat"><i class="fas fa-save"></i>&nbsp;Save changes</button>
 
                 </div>
             </div> <!-- ./modal-content -->

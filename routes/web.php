@@ -76,9 +76,10 @@ Route::group(['middleware' => ['role:super admin']], function () {
 
 
     /** ASSIGN PROCESS */
-
-
-    Route::get('/assignpermission', [RolePermissionController::class, 'assign'])->name('rolepermission.assign');
+    Route::get('/assignpermission', [RolePermissionController::class, 'assign'])->name('assignPermission.assign');
+    Route::get('/assignpermission/{id}/viewpermission', [RolePermissionController::class, 'viewPermissions'])->name('assignPermission.viewPermissions');
+    Route::post('/assignpermission', [RolePermissionController::class, 'storeAssign'])->name('assignPermission.store');
+    Route::post('/assignpermission/datatable', [RolePermissionController::class, 'datatableAssign'])->name('assignPermission.datatable');
 });
 // Route::group(['middleware' => ['auth']], function () {
 

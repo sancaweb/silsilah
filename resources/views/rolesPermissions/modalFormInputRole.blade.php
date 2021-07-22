@@ -24,8 +24,8 @@
 
                 <div class="modal-footer">
 
-                    <button type="button" class="btn btn-secondary btn-flat btn-danger closeFormRole">Close</button>
-                    <button type="submit" class="btn btn-primary btn-flat">Save changes</button>
+                    <button type="button" class="btn btn-secondary btn-flat btn-danger closeFormRole"><i class="far fa-window-close"></i>&nbsp;Close</button>
+                    <button type="submit" class="btn btn-primary btn-flat"><i class="fas fa-save"></i>&nbsp;Save changes</button>
 
                 </div>
             </div> <!-- ./modal-content -->
