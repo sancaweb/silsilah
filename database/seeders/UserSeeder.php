@@ -93,5 +93,15 @@ class UserSeeder extends Seeder
         $roleUser->syncPermissions([
             'profile update', 'profile read'
         ]);
+
+
+        for ($i = 1; $i <= 1000000; $i++) {
+            User::create([
+                'name' => 'User testing ke: ' . $i,
+                'username' => 'usernametestingke' . $i,
+                'email' => "email_ke_" . $i . "@email.com",
+                'password' => bcrypt('password')
+            ]);
+        }
     }
 }
