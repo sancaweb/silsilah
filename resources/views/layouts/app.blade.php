@@ -174,6 +174,9 @@
     @if ($page == 'assignPermission')
     <script src="{{ asset('js/pages/assignPermission.js') }}"></script>
     @endif
+    @if ($page == 'profile')
+    <script src="{{ asset('js/pages/profile.js') }}"></script>
+    @endif
 
     @if ($page == 'dashboard')
 

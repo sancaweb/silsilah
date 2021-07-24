@@ -16,7 +16,7 @@ class TestingController extends Controller
     {
         // $user = User::find(1);
 
-        $isSuperAdmin = auth()->user()->can('user delete');
+        // $isSuperAdmin = auth()->user()->can('user delete');
         // $user->permissions
         // if ($isSuperAdmin) {
         //     return "ini super admin";
@@ -26,18 +26,27 @@ class TestingController extends Controller
         //     // return "ini super admin";
         // }
 
-        // $user = User::create([
-        //     'name' => "Nama usernya",
-        //     'foto' => null,
-        //     'username' => "usernamenya",
-        //     'email' => "emailnya@emailnya.com",
-        //     'password' => Hash::make("password")
-        // ]);
+        $user = User::create([
+            'name' => "Nama usernya testing",
+            'foto' => null,
+            'username' => "usernamenya testing",
+            'email' => "emailnyatesting@emailnya.com",
+            'password' => Hash::make("password")
+        ]);
 
-        // $user->assignRole('role asal aja');
+        $user->assignRole('user');
         // $roles = Role::whereNotIn('name', ['super admin'])->pluck('name');
 
+        if (auth()->user()->id == $user->id) {
+            $self = true;
+        } else {
+            $self = false;
+        }
+        $dataBack = [
+            'dataUser' => $user,
+            'self' => $self
 
-        dd(auth()->user()->can('user read'));
+        ];
+        dd($dataBack);
     }
 }

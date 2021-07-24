@@ -6,5 +6,6 @@
     "/js/pages/dashboard.js": "/js/pages/dashboard.js",
     "/js/pages/rolePermission.js": "/js/pages/rolePermission.js",
     "/js/pages/assignPermission.js": "/js/pages/assignPermission.js",
+    "/js/pages/profile.js": "/js/pages/profile.js",
     "/css/app.css": "/css/app.css"
 }

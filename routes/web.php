@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RoleController;
@@ -29,7 +30,19 @@ Route::group(['middleware' => ['auth']], function () {
 
 Auth::routes();
 
-Route::get('/user/{id}/profile', [UserController::class, 'show'])->name('user.profile')->middleware(['permission:user read']);
+/**
+ * PROFILE
+ */
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile');
+    Route::post('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+/**
+ * ./PROFILE
+ */
+
 
 /** USER ROUTE */
 Route::group(['middleware' => ['permission:user read']], function () {
@@ -49,6 +62,8 @@ Route::delete('user/{id}/delete', [UserController::class, 'delete'])->name('user
 /**
  * ./END USER ROUTE
  */
+
+
 
 
 Route::group(['middleware' => ['role:super admin']], function () {

@@ -8,10 +8,7 @@ jQuery(document).ready(function ($) {
     });
     $.fn.modal.Constructor.prototype._enforceFocus = function () { };
 
-    $('.select2').select2({
-        theme: 'bootstrap4',
-        placeholder: "User Roles",
-    })
+
 
     var columnsTable = [
         { data: "no" },
@@ -96,7 +93,7 @@ jQuery(document).ready(function ($) {
     function formReset() {
         $('#formUser')[0].reset();
         $("#formUser").attr("action", base_url + "/user");
-        $('#role').val('');
+        $('#role').val('').trigger('change');
         $('[name="_method"]').remove();
         $('#imageReview').attr('src', base_url + '/images/no-image.png');
         $('#linkFoto').attr('href', base_url + '/images/no-image.png');
@@ -156,8 +153,12 @@ jQuery(document).ready(function ($) {
                 }).then(function () {
                     var dataUser = data.data.user;
 
-                    $('#userImageSide').attr('src', base_url + '/storage/' + dataUser.foto);
-                    $('#userNameSide').html(dataUser.name);
+                    var self = data.data.self;
+
+                    if (self == true) {
+                        $('#userImageSide').attr('src', base_url + '/storage/' + dataUser.foto);
+                        $('#userNameSide').html(dataUser.name);
+                    }
 
                     refreshTable();
 

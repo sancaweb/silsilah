@@ -74,6 +74,7 @@ class UserController extends Controller
                 'errorValidator' => $validator->messages(),
             ], 'Error Validator', 402);
         }
+
         $isSuperAdmin = auth()->user()->hasRole('super admin');
 
         if (!$isSuperAdmin && $request->role == 'super admin') {
@@ -106,9 +107,17 @@ class UserController extends Controller
 
             DB::commit();
 
+            if (auth()->user()->id == $user->id) {
+                $self = true;
+            } else {
+                $self = false;
+            }
+
 
             return ResponseFormat::success([
-                'user' => $user
+                'user' => $user,
+                'self' => $self
+
             ], 'Data User berhasil ditambahkan');
         } catch (Exception $error) {
             DB::rollBack();
@@ -177,6 +186,9 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+
+
         $dataValidate['foto'] = ['image', 'mimes:jpeg,jpg,png,gif,svg', 'max:5000'];
         $dataValidate['nama'] = ['required', 'max:255'];
         $dataValidate['username'] = ['required', 'max:255', 'unique:users,username,' . $id];
@@ -196,6 +208,7 @@ class UserController extends Controller
 
 
         try {
+
             DB::beginTransaction();
             $user = User::find($id);
 
@@ -203,7 +216,7 @@ class UserController extends Controller
 
                 $isSuperAdmin = auth()->user()->hasRole('super admin');
 
-                if (!$isSuperAdmin && $request->role('super admin')) {
+                if (!$isSuperAdmin && $request->role == 'super admin') {
 
                     return ResponseFormat::error([
                         'error' => "User does not have the right roles."
@@ -244,8 +257,15 @@ class UserController extends Controller
 
             DB::commit();
 
+            if (auth()->user()->id == $user->id) {
+                $self = true;
+            } else {
+                $self = false;
+            }
+
             return ResponseFormat::success([
                 'user' => $user,
+                'self' => $self
             ], 'User Updated');
         } catch (Exception $error) {
             DB::rollBack();

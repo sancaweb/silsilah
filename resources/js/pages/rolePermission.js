@@ -47,7 +47,7 @@ jQuery(document).ready(function ($) {
 
     function refreshTableRole() {
         tableRoles.search("").draw();
-        tableRoles.ajax.reload();
+        // tableRoles.ajax.reload();
     }
 
     var btnRoleReload = document.getElementById('btn-roleReload');
@@ -319,7 +319,7 @@ jQuery(document).ready(function ($) {
 
     function refreshTablePermission() {
         tablePermissions.search("").draw();
-        tablePermissions.ajax.reload();
+        // tablePermissions.ajax.reload();
     }
 
     var btnReloadPermission = document.getElementById('btn-permissionReload');

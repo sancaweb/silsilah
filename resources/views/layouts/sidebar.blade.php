@@ -10,10 +10,10 @@
         <!-- Sidebar user (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-                <img id="userImageSide" src="{{ auth()->user()->takeImage() }}" class="img-circle elevation-2" alt="User Image">
+                <img id="userImageSide" src="{{ auth()->user()->takeImage() }}" class="rounded elevation-2" style="width: 2.1rem;height: 2.1rem;object-fit:cover;object-position:center;" alt="User Image">
             </div>
             <div class="info">
-                <a id="userNameSide" href="{{ route('user.profile', auth()->user()->id) }}" class="d-block">{{ auth()->user()->name }}</a>
+                <a id="userNameSide" href="{{ route('profile') }}" class="d-block">{{ auth()->user()->name }}</a>
             </div>
         </div>
 
