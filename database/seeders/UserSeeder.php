@@ -32,16 +32,12 @@ class UserSeeder extends Seeder
         ]);
 
         $permissions = [
-            'user create', 'user read', 'user update', 'user delete',
-            'post create', 'post read', 'post update', 'post delete',
-            'category create', 'category read', 'category update', 'category delete',
-            'tag create', 'tag read', 'tag update', 'tag delete',
-            'page create', 'page read', 'page update', 'page delete',
-            'plugin create', 'plugin read', 'plugin update', 'plugin delete',
-            'component create', 'component read', 'component update', 'component delete',
-            'model create', 'model read', 'model update', 'model delete',
-            'view create', 'view read', 'view update', 'view delete',
-            'resource create', 'resource read', 'resource update', 'resource delete',
+            'user create', 'user read', 'user update', 'user delete', 'user destroy',
+            'activity create', 'activity read', 'activity update', 'activity delete',
+            'role create', 'role read', 'role update', 'role delete',
+            'permission create', 'permission read', 'permission update', 'permission delete',
+            'assign sync', 'profile read', 'profile update'
+
         ];
 
         foreach ($permissions as $permit) {
@@ -84,9 +80,7 @@ class UserSeeder extends Seeder
         //** give role permissions */
         $roleSuper = Role::find(1);
 
-        $roleSuper->syncPermissions([
-            'user create', 'user read', 'user update', 'user delete'
-        ]);
+        $roleSuper->syncPermissions($permissions);
 
         $roleAdmin = Role::find(2);
 
@@ -97,7 +91,7 @@ class UserSeeder extends Seeder
         $roleUser = Role::find(3);
 
         $roleUser->syncPermissions([
-            'user create', 'user read'
+            'profile update', 'profile read'
         ]);
     }
 }

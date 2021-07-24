@@ -21,23 +21,37 @@ use App\Http\Controllers\UserController;
 */
 
 Route::get('/test', [TestingController::class, 'index'])->name('testing');
+
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/', [DashboardController::class, 'index'])->name('root');
 });
 
 
 Auth::routes();
-Route::group(['middleware' => ['role:super admin']], function () {
 
-    /** USERS */
+Route::get('/user/{id}/profile', [UserController::class, 'show'])->name('user.profile')->middleware(['permission:user read']);
+
+/** USER ROUTE */
+Route::group(['middleware' => ['permission:user read']], function () {
     Route::get('/user', [UserController::class, 'index'])->name('user');
-    Route::post('/user', [UserController::class, 'store'])->name('user.store');
+    Route::post('/user/datatable', [UserController::class, 'datatable'])->name('user.datatable');
+});
 
+Route::post('/user', [UserController::class, 'store'])->name('user.store')->middleware(['permission:user create']);
+
+Route::group(['middleware' => ['permission:user update']], function () {
     Route::get('/user/{id}/edit', [UserController::class, 'edit'])->name('user.edit');
     Route::patch('/user/{id}/update', [UserController::class, 'update'])->name('user.update');
-    Route::delete('user/{id}/delete', [UserController::class, 'delete'])->name('user.delete');
-    Route::post('/user/datatable', [UserController::class, 'datatable'])->name('user.datatable');
-    Route::get('/user/{id}/profile', [UserController::class, 'show'])->name('user.profile');
+});
+
+Route::delete('user/{id}/delete', [UserController::class, 'delete'])->name('user.delete')->middleware(['permission:user delete']);
+
+/**
+ * ./END USER ROUTE
+ */
+
+
+Route::group(['middleware' => ['role:super admin']], function () {
 
     //trash
     Route::get('/user/trash', [UserController::class, 'trash'])->name('user.trash');
@@ -45,16 +59,12 @@ Route::group(['middleware' => ['role:super admin']], function () {
     Route::post('/user/{id}/restore', [UserController::class, 'restore'])->name('user.restore');
     Route::delete('/user/{id}/destroy', [UserController::class, 'destroy'])->name('user.destroy');
 
-
     /** ACTIVITIES */
     Route::get('/activity', [ActivityController::class, 'index'])->name('activity');
     Route::post('/activity/datatable', [ActivityController::class, 'datatable'])->name('activity.datatable');
     Route::get('/activity/{activity}/show', [ActivityController::class, 'show'])->name('activity.show');
-});
 
 
-
-Route::group(['middleware' => ['role:super admin']], function () {
     Route::get('/rolepermission', [RolePermissionController::class, 'index'])->name('rolepermission');
 
     /**
@@ -81,6 +91,3 @@ Route::group(['middleware' => ['role:super admin']], function () {
     Route::post('/assignpermission', [RolePermissionController::class, 'storeAssign'])->name('assignPermission.store');
     Route::post('/assignpermission/datatable', [RolePermissionController::class, 'datatableAssign'])->name('assignPermission.datatable');
 });
-// Route::group(['middleware' => ['auth']], function () {
-
-// });

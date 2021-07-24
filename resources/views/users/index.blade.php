@@ -20,9 +20,12 @@
                             <button id="btn-userReload" type="button" class="btn btn-sm btn-flat btn-success">
                                 <i class="fas fa-sync"></i> &nbsp; Reload
                             </button>
+                            @can('user delete')
                             <a href="{{ route('user.trash') }}" type="button" class="btn btn-sm btn-flat btn-danger">
                                 <i class="fas fa-trash"></i> &nbsp; Users Trash
                             </a>
+                            @endcan
+
                         </div>
                     </div>
                     <!-- /.card-header -->

@@ -20,10 +20,16 @@ class UserController extends Controller
      */
     public function index()
     {
+        if (auth()->user()->hasRole('super admin')) {
+            $roles = Role::all()->pluck('name');
+        } else {
+            $roles = Role::whereNotIn('name', ['super admin'])->pluck('name');
+        }
+
         $dataPage = [
             'pageTitle' => "User Management",
             'page' => 'user',
-            'roles' => Role::all()->pluck('name'),
+            'roles' => $roles,
             'action' => route('user.store')
         ];
 
@@ -58,12 +64,22 @@ class UserController extends Controller
         $dataValidate['password_confirmation'] = ['min:6'];
         $dataValidate['role'] = ['required'];
 
+
         $validator = Validator::make($request->all(), $dataValidate);
+
+
 
         if ($validator->fails()) {
             return ResponseFormat::error([
                 'errorValidator' => $validator->messages(),
             ], 'Error Validator', 402);
+        }
+        $isSuperAdmin = auth()->user()->hasRole('super admin');
+
+        if (!$isSuperAdmin && $request->role == 'super admin') {
+            return ResponseFormat::error([
+                'error' => "User does not have the right roles."
+            ], "User does not have the right roles.", 403);
         }
 
         try {
@@ -110,18 +126,7 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $user = User::find($id);
-        if ($user) {
-            $dataPage = [
-                'pageTitle' => 'User Profile',
-                'page' => 'userProfile',
-                'roles' => Role::all()->pluck('name'),
-                'user' => $user
-            ];
-
-            return view('users.profile', $dataPage);
-        } else {
-        }
+        //
     }
 
     /**
@@ -135,6 +140,14 @@ class UserController extends Controller
         $user =   User::find($id);
 
         if ($user) {
+
+            $isSuperAdmin = auth()->user()->hasRole('super admin');
+
+            if (!$isSuperAdmin && $user->hasRole('super admin')) {
+                return ResponseFormat::error([
+                    'error' => "User does not have the right roles."
+                ], "User does not have the right roles.", 403);
+            }
 
             $dataUser = [
                 'foto' => $user->takeImage(),
@@ -180,11 +193,29 @@ class UserController extends Controller
             ], 'Error Validator', 402);
         }
 
+
+
         try {
             DB::beginTransaction();
             $user = User::find($id);
 
             if ($user) {
+
+                $isSuperAdmin = auth()->user()->hasRole('super admin');
+
+                if (!$isSuperAdmin && $request->role('super admin')) {
+
+                    return ResponseFormat::error([
+                        'error' => "User does not have the right roles."
+                    ], "User does not have the right roles.", 403);
+                }
+
+                if (!$isSuperAdmin && $user->hasRole('super admin')) {
+                    return ResponseFormat::error([
+                        'error' => "User does not have the right roles."
+                    ], "User does not have the right roles.", 403);
+                }
+
 
                 if ($request->hasFile('foto')) {
                     $file = $request->file('foto');
@@ -359,9 +390,19 @@ class UserController extends Controller
         $search = $request->input('search.value');
         $filter = false;
 
-        $getUsers = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
-            ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
-            ->select('users.*', 'roles.name as rolename');
+        $canDelete = auth()->user()->can('user delete');
+
+        if ($canDelete) {
+
+            $getUsers = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                ->select('users.*', 'roles.name as rolename');
+        } else {
+            $getUsers = User::join('model_has_roles', 'users.id', '=', 'model_has_roles.model_id')
+                ->join('roles', 'model_has_roles.role_id', '=', 'roles.id')
+                ->select('users.*', 'roles.name as rolename')
+                ->whereNotIn('roles.name', ['super admin']);
+        }
 
 
         //filter - filter
@@ -396,9 +437,23 @@ class UserController extends Controller
 
         $data = array();
 
+
         if (!empty($users)) {
             $no = $start;
             foreach ($users as $user) {
+
+
+
+                $action = '<button data-id="' . $user->id . '" class="btn btn-primary btn-flat btn-edit">
+                        <i class="fas fa-edit"></i>
+                    </button>';
+
+                if (auth()->user()->can('user delete')) {
+                    $action .= '<button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-flat btn-delete">
+                            <i class="fas fa-trash"></i>
+                        </button>';
+                }
+
                 $no++;
                 $nestedData['no'] = $no;
                 $nestedData['foto'] = '
@@ -406,19 +461,14 @@ class UserController extends Controller
                                     <img src="' . $user->takeImage() . '" alt="Image Foto" style="width: 150px;height: 150px;object-fit:cover;object-position:center;" class="img-thumbnail img-fluid">
                                 </a>
                 ';
+
                 $nestedData['name'] = $user->name;
                 $nestedData['email'] = $user->email;
                 $nestedData['username'] = $user->username;
                 $nestedData['role'] = $user->getRoleNames();
                 $nestedData['created_at'] = $user->created_at->diffForHumans();
 
-                $nestedData['action'] = '<button data-id="' . $user->id . '" class="btn btn-primary btn-flat btn-edit">
-                              <i class="fas fa-edit"></i>
-                          </button>
-                          <button type="button" data-id="' . $user->id . '" class="btn btn-danger btn-flat btn-delete">
-                              <i class="fas fa-trash"></i>
-                          </button>
-                          ';
+                $nestedData['action'] = $action;
 
                 $data[] = $nestedData;
             }

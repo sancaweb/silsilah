@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Spatie\Activitylog\Models\Activity;
 use Spatie\Permission\Models\Permission;
 
@@ -12,17 +14,30 @@ class TestingController extends Controller
 {
     public function index()
     {
-        $countPermissions = Permission::count();
+        // $user = User::find(1);
 
-        $pembagian = $countPermissions / 2;
+        $isSuperAdmin = auth()->user()->can('user delete');
+        // $user->permissions
+        // if ($isSuperAdmin) {
+        //     return "ini super admin";
+        //     // return "bukan super admin";
+        // } else {
+        //     return "ini bukan super admin";
+        //     // return "ini super admin";
+        // }
 
-        $startSatu = 0;
-        // $limit = $pembagian;
-        $startDua = $pembagian;
+        // $user = User::create([
+        //     'name' => "Nama usernya",
+        //     'foto' => null,
+        //     'username' => "usernamenya",
+        //     'email' => "emailnya@emailnya.com",
+        //     'password' => Hash::make("password")
+        // ]);
 
-        $pembagianSatu = Permission::offset($startSatu)->limit($pembagian)->get();
-        $pembagianDua = Permission::offset($startDua)->limit($pembagian)->get();
+        // $user->assignRole('role asal aja');
+        // $roles = Role::whereNotIn('name', ['super admin'])->pluck('name');
 
-        dd($pembagianDua);
+
+        dd(auth()->user()->can('user read'));
     }
 }

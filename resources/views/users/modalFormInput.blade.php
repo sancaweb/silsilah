@@ -62,7 +62,9 @@
                     <div class="form-group">
                         <label>Roles</label>
                         <select class="form-control select2" name="role" id="role">
+                            <option value=""></option>
                             @foreach ($roles as $key=>$role )
+
                             <option value="{{ $role }}">{{ ucwords($role) }}</option>
 
                             @endforeach

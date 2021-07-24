@@ -37,3 +37,7 @@ If you discover a security vulnerability within this project, please send an e-m
 ## License
 
 Laravel 8 Dummy Project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## Roles & Permissions
+
+This project have Roles & Permissions management. You can freely set the permissions to be assigned to the role. In this project, "super admin" role respond true to all permissions. If you want to deactivate this feature, please go to "app/Providers/AuthServiceProvider.php" and comment "GATE" in boot() function. After that, you must reconfiguring route. You can look in the file "userseeder.php" to find out the user, role and permissions that have been created

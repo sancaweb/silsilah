@@ -6,9 +6,11 @@ jQuery(document).ready(function ($) {
             "X-CSRF-TOKEN": $('meta[name="csrf-token"').attr("content")
         }
     });
+    $.fn.modal.Constructor.prototype._enforceFocus = function () { };
 
     $('.select2').select2({
-        theme: 'bootstrap4'
+        theme: 'bootstrap4',
+        placeholder: "User Roles",
     })
 
     var columnsTable = [
@@ -302,9 +304,15 @@ jQuery(document).ready(function ($) {
                     error: function (jqXHR, textStatus, errorThrown) {
 
                         var error = jqXHR.responseJSON;
+
+                        if (error.meta) {
+                            var message = error.meta.message;
+                        } else {
+                            var message = error.message;
+                        }
                         Swal.fire({
                             icon: "error",
-                            title: error.meta.message,
+                            title: message,
                             showConfirmButton: false,
                             timer: 2000,
                             allowOutsideClick: false

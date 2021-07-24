@@ -31,8 +31,21 @@
                     </a>
                 </li>
 
+
+
+                @role('super admin|admin')
                 <li class="nav-header">System Settings</li>
 
+                <li class="nav-item">
+                    <a href="{{ route('user') }}" class="nav-link {{ $page == 'user' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-users-cog"></i> &nbsp;
+                        <p>
+                            Users
+                        </p>
+                    </a>
+                </li>
+
+                @role('super admin')
                 <li class="nav-item {{ $page=='rolePermission' || $page=='assignPermission' ? 'menu-is-opening menu-open' : '' }}">
                     <a href="#" class="nav-link">
                         <i class="nav-icon fas fa-user-shield"></i>
@@ -60,14 +73,7 @@
                     </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a href="{{ route('user') }}" class="nav-link {{ $page == 'user' ? 'active' : '' }}">
-                        <i class="nav-icon fas fa-users-cog"></i> &nbsp;
-                        <p>
-                            Users
-                        </p>
-                    </a>
-                </li>
+
 
                 <li class="nav-item">
                     <a href="{{ route('activity') }}" class="nav-link {{ $page == 'activity' ? 'active' : '' }}">
@@ -77,6 +83,9 @@
                         </p>
                     </a>
                 </li>
+                @endrole
+                @endrole
+
 
                 <li class="nav-item">
                     <a href="{{ route('activity') }}" class="nav-link" data-toggle="modal" data-target="#logoutModal">
