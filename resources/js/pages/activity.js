@@ -21,6 +21,20 @@ jQuery(document).ready(function ($) {
 
     $('.rangeDate').val();
 
+    $('#userAct').select2({
+        theme: 'bootstrap4',
+        placeholder: "Select User",
+        allowClear: true
+
+    });
+
+    $('#logNameAct').select2({
+        theme: 'bootstrap4',
+        placeholder: "Select Log Name",
+        allowClear: true
+
+    });
+
 
     var columnsTable = [
         { data: "no" },
@@ -70,7 +84,7 @@ jQuery(document).ready(function ($) {
 
     function refreshTable() {
         tableActivity.search("").draw();
-        tableActivity.ajax.reload();
+        // tableActivity.ajax.reload();
     }
 
     var btnReloadActivity = document.getElementById('btn-activityReload');

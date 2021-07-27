@@ -14,6 +14,7 @@ class ActivityController extends Controller
     {
 
         $userAct = User::orderBy('name', 'ASC')->get();
+        // $userAct = User::with('causer')->orderBy('name', 'ASC')->get();
         $logNameAct = Activity::select('log_name')->distinct()->get();
 
         $dataPage = [
@@ -157,13 +158,14 @@ class ActivityController extends Controller
             $no = $start;
             foreach ($activities as $act) {
                 $no++;
-                if ($act->causer_id === null) {
-                    $username = "System";
-                } else {
-                    $username = $act->causer->name;
-                }
+                // if ($act->causer_id === null) {
+                //     $username = "System";
+                // } else {
+                //     $username = $act->causer->name;
+                // }
                 $nestedData['no'] = $no;
-                $nestedData['user'] = $username;
+                // $nestedData['user'] = $username;
+                $nestedData['user'] = $act->causer->name;
                 $nestedData['logName'] = $act->log_name;
                 $nestedData['description'] = $act->description;
                 $nestedData['created_at'] = $act->created_at->translatedFormat('j F Y H:i:s');

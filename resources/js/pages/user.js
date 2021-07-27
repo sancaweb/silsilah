@@ -122,6 +122,12 @@ jQuery(document).ready(function ($) {
         formReset();
     }
 
+    $('#role').select2({
+        theme: 'bootstrap4',
+        placeholder: "Select Role",
+        allowClear: true
+
+    });
 
 
     $("#formUser").on("submit", function (e) {

@@ -18,7 +18,7 @@
                 <div class="form-group row">
                     <div class="col-sm-6 mb-3 mb-sm-0">
                         <select id="userAct" class="form-control form-control-lg">
-                            <option value="">-= Select User =-</option>
+                            <option value=""></option>
                             @foreach ($userAct as $user)
                             <option value="{{ $user->id }}">{{ $user->name }}</option>
                             @endforeach
@@ -27,7 +27,7 @@
                     </div>
                     <div class="col-sm-6 mb-3 mb-sm-0">
                         <select id="logNameAct" class="form-control form-control-lg">
-                            <option value="">-= Select Log Name =-</option>
+                            <option value=""></option>
                             @foreach ($logNameAct as $log)
                             <option value="{{ $log->log_name }}">{{ $log->log_name }}</option>
                             @endforeach
