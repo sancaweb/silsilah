@@ -1,8 +1,8 @@
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
 
-## About Laravel 8 Dummy Project
+## About Laravel 8 Silsilah
 
-Laravel 8 Dummy Project, is a starter pack before you start the project. Included :
+Laravel 8 Silsilah, is a starter pack before you start the project. Included :
 
 -   [Spatie Laravel Permission](https://spatie.be/docs/laravel-permission/v4/introduction)
 -   [Spatie Activity Log](https://spatie.be/docs/laravel-activitylog/v4/introduction)
@@ -36,7 +36,7 @@ If you discover a security vulnerability within this project, please send an e-m
 
 ## License
 
-Laravel 8 Dummy Project is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Laravel 8 Silsilah is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
 
 ## Roles & Permissions
 
