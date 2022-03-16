@@ -229,7 +229,7 @@ class RolePermissionController extends Controller
     public function storePermission(Request $request)
     {
         $dataValidate = [
-            'permissionName' => ['required', 'max:255'],
+            'permissionName' => ['required', 'max:255', 'unique:permissions,name'],
         ];
 
         $validator = Validator::make($request->all(), $dataValidate);
@@ -278,7 +278,7 @@ class RolePermissionController extends Controller
 
     public function updatePermission(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), ['permissionName' => ['required', 'max:255']]);
+        $validator = Validator::make($request->all(), ['permissionName' => ['required', 'max:255', 'unique:permissions,name,' . $id]]);
 
         if ($validator->fails()) {
             return ResponseFormat::error([

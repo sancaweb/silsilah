@@ -31,6 +31,26 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a href="{{ route('person') }}" class="nav-link {{ $page == 'person' ? 'active' : '' }}">
+                        <i class="nav-icon fas fa-house-user"></i> &nbsp;
+                        <p>
+                            Anggota Keluarga
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="#" class="nav-link ">
+                        <i class="nav-icon fas fa-hand-holding-heart"></i> &nbsp;
+                        <p>
+                            Pernikahan
+                        </p>
+                    </a>
+                </li>
+
+
+
 
 
                 @role('super admin|admin')

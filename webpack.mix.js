@@ -20,4 +20,5 @@ mix.js('resources/js/app.js', 'public/js')
     .js('resources/js/pages/assignPermission.js', 'public/js/pages')
     .js('resources/js/pages/profile.js', 'public/js/pages')
     .sass('resources/sass/app.scss', 'public/css')
+    .sass('resources/sass/tree.scss', 'public/css')
     .sourceMaps();

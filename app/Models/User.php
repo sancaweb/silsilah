@@ -52,9 +52,9 @@ class User extends Authenticatable
         return $this->hasMany(Activity::class, 'causer_id', 'id');
     }
 
+
     public function takeImage()
     {
-
 
         if ($this->foto === null) {
             return asset("images/no-image.png");
@@ -64,8 +64,13 @@ class User extends Authenticatable
             if ($exist) {
                 return asset("storage/" . $this->foto);
             } else {
-                return asset("images/no-imageku.png");
+                return asset("images/no-image.png");
             }
         }
+    }
+
+    public function person()
+    {
+        return $this->hasOne(Person::class, 'user_id', 'id');
     }
 }

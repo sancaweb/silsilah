@@ -36,7 +36,8 @@ class UserSeeder extends Seeder
             'activity create', 'activity read', 'activity update', 'activity delete',
             'role create', 'role read', 'role update', 'role delete',
             'permission create', 'permission read', 'permission update', 'permission delete',
-            'assign sync', 'profile read', 'profile update'
+            'assign sync', 'profile read', 'profile update',
+            'person create', 'person read', 'person update', 'person delete',
 
         ];
 
@@ -97,16 +98,16 @@ class UserSeeder extends Seeder
 
 
         //test bulk data username
-        for ($i = 1; $i <= 10000; $i++) {
-            $user = User::create([
-                'name' => 'User testing ke: ' . $i,
-                'username' => 'usernametestingke' . $i,
-                'email' => "email_ke_" . $i . "@email.com",
-                'password' => bcrypt('password')
-            ]);
+        // for ($i = 1; $i <= 10000; $i++) {
+        //     $user = User::create([
+        //         'name' => 'User testing ke: ' . $i,
+        //         'username' => 'usernametestingke' . $i,
+        //         'email' => "email_ke_" . $i . "@email.com",
+        //         'password' => bcrypt('password')
+        //     ]);
 
-            //test bulk data activity
-            activity('testing_management')->causedBy($user)->withProperties($user)->performedOn($user)->log('Create User');
-        }
+        //     //test bulk data activity
+        //     activity('testing_management')->causedBy($user)->withProperties($user)->performedOn($user)->log('Create User');
+        // }
     }
 }

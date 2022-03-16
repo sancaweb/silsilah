@@ -20,7 +20,7 @@
         <!-- /.login-logo -->
         <div class="card card-outline card-primary">
             <div class="card-header text-center">
-                <p class="login-box-msg h4"><b>Laravel8 Dummy</b></p>
+                <p class="login-box-msg h4"><b>Silsilah Keluarga</b></p>
             </div>
             <div class="card-body">
                 <p class="login-box-msg">Silahkan login</p>

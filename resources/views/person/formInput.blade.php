@@ -8,18 +8,34 @@
                 <div class="card card-widget widget-user shadow">
                     <!-- Add the bg color to the header using any of the bg-* classes -->
                     <div class="widget-user-header bg-info">
-                        <h3 class="widget-user-username">{{ $user->name }}</h3>
-                        <h5 class="widget-user-desc">{{ ucwords($user->roles->pluck('name')->first()) }}</h5>
+                        <h3 class="widget-user-username">username</h3>
+                        <h5 class="widget-user-desc">user descriptions</h5>
                     </div>
                     <div class="widget-user-image">
-                        <img class="img-circle elevation-2" src="{{ $user->takeImage() }}" alt="User Avatar" style="width: 100px;height: 100px;object-fit:cover;object-position:center;">
+                        <img class="img-circle elevation-2" src="{{ asset('images/no-image.png') }}" alt="User Avatar" style="width: 100px;height: 100px;object-fit:cover;object-position:center;">
                     </div>
                     <div class="card-footer">
                         <div class="row">
-                            <div class="col-sm-12">
+                            <div class="col-sm-4 border-right">
                                 <div class="description-block">
+                                    <h5 class="description-header">created_at</h5>
                                     <span class="description-text">Register</span>
-                                    <h5 class="description-header">{{ $user->created_at->diffForHumans() }}</h5>
+                                </div>
+                                <!-- /.description-block -->
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-sm-4 border-right">
+                                <div class="description-block">
+                                    <h5 class="description-header">0</h5>
+                                    <span class="description-text">ANAK</span>
+                                </div>
+                                <!-- /.description-block -->
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-sm-4">
+                                <div class="description-block">
+                                    <h5 class="description-header">0</h5>
+                                    <span class="description-text">CUCU</span>
                                 </div>
                                 <!-- /.description-block -->
                             </div>
@@ -31,11 +47,11 @@
             </div> <!-- ./end col-xx -->
 
             <div class="col-lg-8 col-md-8 col-sm-8">
-                <form action="{{ route('profile.update') }}" method="post" id="formProfile" enctype="multipart/form-data">
+                <form action="#" method="post" id="formProfile" enctype="multipart/form-data">
                     @csrf
                     <div class="card card-outline card-success">
                         <div class="card-header">
-                            <h3 class="card-title">Login Account</h3>
+                            <h3 class="card-title">Profile Anggota Keluarga</h3>
 
                             <div class="card-tools">
 
@@ -45,8 +61,8 @@
                         <!-- /.card-header -->
                         <div class="card-body">
                             <div class="form-group">
-                                <a id="linkFoto" href="{{ $user->takeImage() }}" data-lightbox="image-foto" data-title="User Foto">
-                                    <img id="imageReview" src="{{ $user->takeImage() }}" alt="Image Foto" style="width: 150px;height: 150px;" class="img-thumbnail img-fluid">
+                                <a id="linkFoto" href="{{ asset('images/no-image.png') }}" data-lightbox="image-foto" data-title="User Foto">
+                                    <img id="imageReview" src="{{ asset('images/no-image.png') }}" alt="Image Foto" style="width: 150px;height: 150px;" class="img-thumbnail img-fluid">
                                 </a>
                             </div>
 
@@ -62,19 +78,19 @@
 
                             <div class="form-group">
                                 <label>Nama</label>
-                                <input type="text" class="form-control" name="nama" value="{{ $user->name }}" required>
+                                <input type="text" class="form-control" name="nama" value="" required>
                             </div>
                             <!-- /.form-group -->
 
                             <div class="form-group">
                                 <label>Username</label>
-                                <input type="text" class="form-control" name="username" value="{{ $user->username }}" required>
+                                <input type="text" class="form-control" name="username" value="" required>
                             </div>
                             <!-- /.form-group -->
 
                             <div class="form-group">
                                 <label>Email</label>
-                                <input type="email" class="form-control" name="email" value="{{ $user->email }}" required>
+                                <input type="email" class="form-control" name="email" value="" required>
                             </div>
                             <!-- /.form-group -->
 
@@ -93,7 +109,7 @@
 
                             <div class="form-group">
                                 <label>Roles</label>
-                                <input type="text" class="form-control" value="{{ $user->getRoleNames() }}" disabled>
+                                <input type="text" class="form-control" value="" disabled>
 
                             </div>
                             <!-- /.form-group -->
